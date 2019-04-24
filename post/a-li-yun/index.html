@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>阿里云学生服务器的购买和配置方法 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1556073165427">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1556079741907">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1556073165427" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1556079741907" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -114,10 +114,44 @@
 <li>使用浏览器发起安全连接</li>
 <li>通过远程桌面工具连接（如Windows自带的远程桌面连接工具）</li>
 </ul>
-<p><a href="https://help.aliyun.com/knowledge_detail/60784.html?spm=5176.10173289.107.2.1bad2e77CPXRYM">具体连接方法可以参考《Windows远程桌面工具配置说明》</a></p>
+<p>具体连接方法可以参考<a href="https://help.aliyun.com/knowledge_detail/60784.html?spm=5176.10173289.107.2.1bad2e77CPXRYM">《Windows远程桌面工具配置说明》</a>
+连接的时候，笔者并不是一次就连接成功，这里贴上可能出现的错误的解决方案，希望有用。<br>
+可能出现问题的解决方案<a href="https://www.cnblogs.com/raswin/p/9018388.html">https://www.cnblogs.com/raswin/p/9018388.html</a></p>
 <h3 id="三环境配置与项目部署">三，环境配置与项目部署</h3>
 <h4 id="1环境配置">1.环境配置</h4>
+<ul>
+<li><strong>前期准备</strong>：将你的web项目打包成war(确保你个项目能在你的本机正常运行，访问)、由于我们需要在远程主机上从我们本地拷贝相关文件，因此需将本地某个盘共享到远程服务器中，故需要将自己项目运行的环境放在本机的一个磁盘上(如，笔者在F盘根目录下新建【<strong>我的远程项目</strong>】文件夹，在该文件夹下存放，MySQL数据库，JDK，Tomcat，数据库文件等)。</li>
+<li><strong>远程连接</strong>：详情请看下图</li>
+</ul>
+<p>(1).Window+R -&gt; 输入mstsc 回车 来到这个界面<br>
+<img src="https://ahualy.github.io//post-images/1556078371557.png" alt="">
+(2).如上图输入我们购买的云服务器的外网ip<br>
+(3).接着点击【<strong>本地资源</strong>】--&gt;【<strong>详细信息</strong>】 --&gt;【<strong>驱动器</strong>】选中你要共享的磁盘。这里我选中F盘<br>
+(4).确定后点击连接 用户名为Administrator，密码为之前设置的那个很复杂的那个密码(即之前点击重置密码时设置的密码) ，点击确定进入远程主机界面。成功后，会看到如下图所示界面。<br>
+<img src="https://ahualy.github.io//post-images/1556078739171.png" alt=""></p>
 <h4 id="2项目部署">2.项目部署</h4>
+<ul>
+<li><strong>运行环境</strong>：需要注意的是！！！必须配置JAVA_HOME和CATALINA_HOME否则tomcat启动会失败(必须配置这两个HOME)
+环境配置如下:<br>
+1.1配置JAVA_HOME<br>
+在环境变量中新建环境变量，名为JAVA_HOME，内容为Java安装根目录,例如C:\Java\jdk_1.7.0_13.<br>
+在环境变量中找到path环境变量，在最后面加上 ;%JAVA_HOME%\bin; (注意前后的两个分号不可少) 。<br>
+验证:Windows+R 输入cmd 键入javac 验证是否成功。<br>
+1.2配置CATALINA_HOME<br>
+在环境变量中新建环境变量,名为CATALINA_HOME,内容为tomcat根目录,例如：C:\apache-tomcat-7.0.56<br>
+在环境变量中找到path环境变量,在最后面加上 ;%CATALINA_HOME\bin; (注意前后的两个分号不可少)  。<br>
+验证：进入tomcat目录下的bin目录下运行startup.bat文件,若能正常启动服务，则说明配置成功，若启动服务一闪而过，表示失败 失败原因有两种：1.JAVA_HOME路径有误   2.CATALINA_HOME路径有误     自己检查。<br>
+以上已完成正常的服务配置，启动服务后，打开远程主机上的浏览器，输入<a href="http://localhost:8080">http://localhost:8080</a> 若能访问到tomcat主页，则说明配置成功。</li>
+<li><strong>部署项目</strong>：
+接下来将外网ip配置进去，即可通过外网ip访问我们的远程服务器，具体操作如下:<br>
+进入tomcat根目录，找到conf下的server.xml文件，找到host根节点。<br>
+将原来的name=&quot;localhost&quot; 中的localhost改成我们的外网ip.<br>
+保存后，重启服务
+验证:随便使用一台电脑打开浏览器，输入【公网ip:8080】即可访问到我们远程主机上的web项目。<br>
+不加端口号访问项目的方法<br>
+将Connector节点下的port属性值改成80即可在访问的时候不加端口号.http默认端口号为80因此我们可以不用输入端口号。</li>
+</ul>
+<p>教程结束 ，祝你成功！！！</p>
 
             </div>
           </article>
