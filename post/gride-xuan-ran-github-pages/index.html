@@ -1,0 +1,195 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gride渲染Github Pages | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1556198639073">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1556198639073" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Gride渲染Github Pages
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-25 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <h4 id="一-github-pages创建">一、Github Pages创建</h4>
+<h5 id="1github账号注册">1.Github账号注册</h5>
+<ul>
+<li>登录Github官网<a href="https://github.com/">https://github.com/</a>  注册Github账号，并登陆。</li>
+</ul>
+<h5 id="2github-pages创建">2.Github Pages创建</h5>
+<ul>
+<li>熟悉Github各个功能Tag，创建一个repositorie,（new repositorie）名称为你的Github账号名.github.io（如：ahualy.github.io）</li>
+<li>创建好之后，新建的repositorie将会出现在左边Repositories列表里面，点击进入，你将看到这个新建仓库的目录结构。</li>
+<li>点击上方Settings，滑动鼠标至GitHub Pages，在None里面选在你的用户名，Choose a theme里面随便选择一个主题，完成即可。</li>
+</ul>
+<h4 id="二-git下载">二、Git下载</h4>
+<h5 id="1git下载与安装">1.Git下载与安装</h5>
+<ul>
+<li>在Git官网下载适合你电脑系统的Git客户端<a href="https://git-scm.com/">https://git-scm.com/</a></li>
+<li>安装Git（傻瓜式即可）</li>
+<li>安装完之后，鼠标在桌面空白处右击，看到Git GUI Here 和 Git Bash Here证明你的Git安装成功。</li>
+</ul>
+<h5 id="2git连接github">2.Git连接Github</h5>
+<ul>
+<li>回到刚刚新建的Github--&gt; repositorie里面， 点击Clone or download,复制Https链接。</li>
+<li>桌面空白处右击鼠标，点击Git Bash Here，弹出类似于cmd的黑框框。</li>
+<li>输入命令git clone &quot;刚刚复制的链接&quot; ，然后Enter</li>
+<li>Clone成功之后，cd 文件名（repositorie的名）</li>
+<li>添加所有文件到此路径 git add .</li>
+<li>提交该路径  命令：git commit -m &quot;提交内容&quot;</li>
+<li>push该项目到Github 命令：git push -u origin master</li>
+<li>要求你输入用户名和邮箱（你注册Github 的用户名和邮箱）</li>
+<li>成功之后，回到Github，点击你的repositorie就会看到你的提交的记录。</li>
+</ul>
+<h4 id="三-gride下载与配置">三、Gride下载与配置</h4>
+<h5 id="1gride下载">1.Gride下载</h5>
+<ul>
+<li>Gride 一个静态博客写作客户端，前往下载通道<a href="https://gridea.dev/">https://gridea.dev/</a></li>
+<li>安装完之后，首先熟练软件的各个功能，接下来跟随笔者开始配置。</li>
+</ul>
+<h5 id="2gride配置">2.Gride配置</h5>
+<ul>
+<li>点击左边导航栏 配置项，完成如下图所示的配置</li>
+</ul>
+<p><img src="https://ahualy.github.io//post-images/1556196016486.png" alt="">
+其余各项按照图示，根据你的repositorie以及Github账号填写就行，主要谈谈Token的创建。
+Token：回到你的Github ，点击右上角头像，选择Settings--&gt;Developer settings--&gt;Personal access tokens,创建即可。</p>
+<ul>
+<li>评论配置（Gitalk）<br>
+(1).Client ID<br>
+(2).Client Secret<br>
+直接提出创建详细流程<a href="https://github.com/gitalk/gitalk/blob/master/readme-cn.md">https://github.com/gitalk/gitalk/blob/master/readme-cn.md</a></li>
+</ul>
+<p>完成以上步骤之后，点击下方同步按钮，即可将你的配置信息同步到Github上。
+打开浏览器，通过你的Github Pages域名访问即可看到你的个人博客页面。</p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/a-li-yun">
+              <h3 class="post-title">
+                阿里云学生服务器的购买和配置方法
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
