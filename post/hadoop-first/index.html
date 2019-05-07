@@ -1,0 +1,198 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hadoop系列-第一天（基本概念及开发环境配置） | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1557224358657">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1557224358657" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Hadoop系列-第一天（基本概念及开发环境配置）
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-06 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p><a href="https://hadoop.apache.org/"><img src="https://ahualy.github.io//post-images/1557117804182.jpg" alt=""></a></p>
+<h3 id="hadoop是什么">Hadoop是什么？</h3>
+<p>The Apache™ Hadoop® project develops open-source software for reliable, scalable, distributed computing.</p>
+<ul>
+<li>
+<p>解决的问题：</p>
+<ul>
+<li>海量数据的存取（HDFS）分布式的存储系统，集群的方式存储数据</li>
+<li>海量数据的分析（MapReduce）</li>
+<li>资源管理调度（YARN）</li>
+</ul>
+</li>
+<li>
+<p>作者：Doug Cutting</p>
+</li>
+<li>
+<p>受Google三篇论文的启发（GFS，MapReduce，BigTable）</p>
+</li>
+</ul>
+<h3 id="hadoop具体能干什么">Hadoop具体能干什么？</h3>
+<ul>
+<li>hadoop擅长（海量的离线的）日志分析，facebook就用Hive来进行日志分析。</li>
+<li>hadoop也可以做在线的实时的数据分析。</li>
+</ul>
+<p><strong>举个栗子：</strong>
+设想一下这样的应用场景. 我有一个100M 的数据库备份的sql 文件.我现在想在不导入到数据库的情况下直接用grep操作 通过正则过滤出我想要的内容。例如：某个表中 含有相同关键字的记录那么有几种方式,一种是直接用linux的命令 grep 还有一种就是通过编程来读取文件,然后对每行数据进行正则匹配得到结果好了 现在是100M 的数据库备份.上述两种方法都可以轻松应对。<br>
+那么如果是1G , 1T 甚至 1PB 的数据呢 ,上面2种方法还能行得通吗？ 答案是不能.毕竟单台服务器的性能总有其上限.那么对于这种 超大数据文件怎么得到我们想要的结果呢？<br>
+有种方法 就是分布式计算, 分布式计算的核心就在于 利用分布式算法 把运行在单台机器上的程序扩展到多台机器上并行运行.从而使数据处理能力成倍增加.但是这种分布式计算一般对编程人员要求很高,而且对服务器也有要求.导致了成本变得非常高。<br>
+Haddop 就是为了解决这个问题诞生的.Haddop 可以很轻易的把 很多linux的廉价pc 组成 分布式结点,然后编程人员也不需要知道分布式算法之类,只需要根据mapreduce的规则定义好接口方法,剩下的就交给Haddop. 它会自动把相关的计算分布到各个结点上去,然后得出结果。<br>
+例如上述的例子 ： Hadoop 要做的事 首先把 1PB的数据文件导入到 HDFS中, 然后编程人员定义好 map和reduce, 也就是把文件的行定义为key,每行的内容定义为value , 然后进行正则匹配,匹配成功则把结果 通过reduce聚合起来回.Hadoop 就会把这个程序分布到N 个结点去并行的操作。<br>
+那么原本可能需要计算好几天,在有了足够多的结点之后就可以把时间缩小到几小时之内。</p>
+<p>这也就是所谓的 大数据 云计算了.如果还是不懂的话再举个简单的例子：
+比如  1亿个  1 相加 得出计算结果, 我们很轻易知道结果是 1亿.但是计算机不知道.那么单台计算机处理的方式做一个一亿次的循环每次结果+1    ，那么分布式的处理方式则变成 我用 1万台 计算机,每个计算机只需要计算 1万个 1 相加 然后再有一台计算机把 1万台计算机得到的结果再相加从而得到最后的结果。<br>
+理论上讲, 计算速度就提高了 1万倍. 当然上面可能是一个不恰当的例子.但所谓分布式,大数据,云计算 大抵也就是这么回事了。</p>
+<h3 id="hadoop的特点">Hadoop的特点</h3>
+<ul>
+<li>扩容能力（Scalable）：能可靠地（reliably）存储和处理千兆字节（PB）数据。</li>
+<li>成本低（Economical）：可以通过普通机器组成的服务器群来分发以及处理数据。这些服务器群总计可达到千个节点。</li>
+<li>高效率（Effucient）：通过分发数据，hadoop可以在数据所在的节点上并行地（parallel）处理他们，这使得处理非常的迅速。</li>
+<li>可靠性（Reliable）：hadoop能自动的维护数据的多份副本，并且在任务失败后能自动地重新部署（redeploy）计算任务。</li>
+</ul>
+<h3 id="版本">版本</h3>
+<ul>
+<li>Apache   官方版本</li>
+<li>Cloudera  Cloudera的开源Apache Hadoop发行版，亦即，面向Hadoop企业级部署。（CHD）</li>
+<li>Hortonworks Data Platform (HDP®)</li>
+</ul>
+<h3 id="环境配置">环境配置</h3>
+<h4 id="centos虚拟机的安装">CentOS虚拟机的安装</h4>
+<ul>
+<li>VMware安装</li>
+<li>虚拟机安装</li>
+</ul>
+<p><img src="https://ahualy.github.io//post-images/1557118287381.png" alt=""></p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/java-generic">
+              <h3 class="post-title">
+                我所理解的Java泛型
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
