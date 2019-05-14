@@ -1,0 +1,406 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux基本命令荟萃 | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1557829119371">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1557829119371" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Linux基本命令荟萃
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-14 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <h2 id="linux基础学习笔记主要是一些常用的命令总结">Linux基础学习笔记，主要是一些常用的命令总结</h2>
+<ul>
+<li>Linux学习笔记    Linux里面一切都是文件</li>
+</ul>
+<h5 id="1linux专门提供了tree命令-查看树型层次结构-tree-home-tree">1.Linux专门提供了tree命令。查看树型层次结构  tree /home  tree /</h5>
+<h5 id="2-表示linux系统的根目录">2./  表示Linux系统的根目录</h5>
+<h5 id="3绝对路径和相对路径">3.绝对路径和相对路径</h5>
+<ul>
+<li>pwd 命令  打印当前工作目录  这个目录就是绝对路径</li>
+<li>相对路径就是相对于当前路径而言，就是一个路径从当前路径算起，应该怎么走</li>
+<li>Linux中相对路径有四中表示方法，分别为 .| ..| ~user| ~</li>
+<li>.表示当前路径  ..表示父路径  ~user表示某个用户的主目录 其中user表示用户账号，~表示当前用户的主目录</li>
+</ul>
+<h5 id="4linux对大小写敏感">4.Linux对大小写敏感</h5>
+<h5 id="5cd-表示该表当前的工作目录">5.cd 表示该表当前的工作目录</h5>
+<h5 id="6tree-l-1-当前系统中根目录下的所有目录">6.tree / -L 1  当前系统中根目录下的所有目录</h5>
+<h5 id="7cat命令来输出某个文件中内容">7.cat命令来输出某个文件中内容</h5>
+<h5 id="8ll查看文件的类型">8.ll查看文件的类型</h5>
+<h5 id="9file查看文件的具体类型-elf表示可执行文件">9.file查看文件的具体类型  ELF表示可执行文件</h5>
+<h5 id="10linux把目录也看成一种文件-ll命令显示的结果中-目录文件的第一个字符为d">10.Linux把目录也看成一种文件   ll命令显示的结果中  目录文件的第一个字符为d</h5>
+<ul>
+<li>ll /etc|grep '^d'     |表示匿名管道  就是讲ll命令的输出结果输出入到后面的命令。</li>
+<li>grep命令用来对ll的输出结果进行筛选，而^d则是一个正则表达式，表示一字符d开始的文本。</li>
+<li>file命令也可以用来判断是否为文件目录</li>
+<li>file /etc/*    文件目录输出为  directory</li>
+</ul>
+<h5 id="11ll命令中-字符设备的标识为c">11.ll命令中。字符设备的标识为c</h5>
+<p>ll /dev|grep '^c'     输出   crw-r--r--
+在比如使用file命令  file /dev/tty      输出  /dev/tty: character special (5/0)  文件为字符特殊文件</p>
+<h5 id="12块设备文件-ll-devgrep-b-文件类型为b">12.块设备文件  ll /dev|grep '^b'  文件类型为b</h5>
+<ul>
+<li>sda 为当前系统中连接的第一块磁盘，sda1，sda2等等分别为sda上面的分区。sr0为光驱，光盘也属于块设备文件。</li>
+<li>使用file命令 file /dev/sda  输出 /dev/sda: block special (8/0)</li>
+</ul>
+<h5 id="13管道-所谓管道是linux系统中讲一个进程的输出连接到另一个进程的输入从而允许进程间通信的文件">13.管道  所谓管道，是Linux系统中讲一个进程的输出连接到另一个进程的输入，从而允许进程间通信的文件。</h5>
+<ul>
+<li>可以简单的理解，管道的作用就是充当两个进程见数据交换的通道。</li>
+<li>可以Linux系统中需要通信的两个进程比作两段断开的水管，现在需要讲一段水管中的水引入到另一个水管中，为了达到这个目的</li>
+<li>需要一段中间的转接水管，而管道就承担了这个角色。</li>
+<li>Linux中的管道文件有两种类型，分别为匿名管道和命令管道。</li>
+<li>匿名管道使用|符号表示，通常情况下，它用来连接两个命令。</li>
+<li>ps -ef | grep mysql  （意思就是查找当前系统中是否存在包含mysql关键字的进程，这个命令可以帮助查看Mysql
+Server是否运行）</li>
+<li>ps -ef表示列出当前系统中的进程  grep mysql  就是用来匹配指定的字符串</li>
+<li>ll /etc | more   ll命令的输出结果传给more后，如果输出结果超过一屏，则会在屏幕底部显示一个“更多”字样，通过空格继续查看。</li>
+</ul>
+<pre><code>命名管道
+ll /run/systemd/initctl/   输出结果中  fifo为一个命名管道文件，其文件类型为p
+file命令  file /run/systemd/initctl/fifo  输出  /run/systemd/initctl/fifo: fifo (named pipe)
+命名管道的两种创建方法
+1.在Shell下通过命令交互创建命名管道
+  在Shell下用户可以通过2个命令创建命名管道文件名，分别为mknod和mkfifo
+  mknod命令  mknod fifo p   fifo表示要创建的文件名  p表示文件类型是管道文件
+  mkfifo命令  mkfifo fifo  这里直接写上文件名就行
+2.在程序中通过调用系统函数创建命名管道
+  为了便于编程  Linux提供mkfifo()函数来创建命名管道文件
+  函数原型  int  mkfifo(const char *pathname,mode_t mode);
+  其中pathname为命名管道文件的文件名，mode为文件的访问权限，该函数返回值为整型。
+</code></pre>
+<h5 id="14套接字">14.套接字</h5>
+<p>通过套接字能使通过网络连接的不同计算机的进程之间通信。这就是说，套接字可以运行网络上不同机器中的
+进程提供数据和信息传输。套接字文件以字母s标识。
+ll /run/mysqld/  与管道一样，套接字文件也不与任何数据块关联。</p>
+<h5 id="15文件链接-所谓链接是对文件的引用">15.文件链接 所谓链接，是对文件的引用。</h5>
+<p>1.符号链接（软链接  类似于一个指针，指向文件在文件系统中的具体位置，可以跨文件系统指向远程的文件系统中的文件）<br>
+ll /bin   输出ypdomainname -&gt; hostname*  就为符号链接  有箭头指向了原始文件。<br>
+file命令  file /bin/bzcmp    输出  /bin/bzcmp: symbolic link to bzdiff<br>
+上面的结果明确告诉我们， /bin/bzcmp是一个指向bzdiff的符号链接。<br>
+2.硬链接（是同一个文件系统中同一个文件的一个或者多个别名）硬链接直接指向文件的实际数据在磁盘上面的存储位置。</p>
+<h5 id="16rm-文件名-删除文件">16.rm 文件名  删除文件</h5>
+<h5 id="17文件权限">17.文件权限</h5>
+<ul>
+<li>1.基本权限  分为三个权限组  文件所有者（u文件的创建者，拥有全部权限）、文件所属组（g某个用户对该文件拥	有访问权限）、其他用户（o其他用户对文件的访对每个文件或者目录，有三种基本权限类型，分别为读，写和执行。r  w  x  如果没有该种权限则用连字符-表示。
+Linux还支持一种二进制数字表示法，即分别用二进制100,010,001表示，十进制就是4，2，1</li>
+<li>2.特殊权限 三种特殊权限，分别是setuid,setgid和黏滞位。前面两种用s表示。十进制  4   2<br>
+前面两种是为了是某个程序执行时能够得到权限提升而设置。而后者则是为了保护文件目录不被他人删除而设置。<br>
+setuid set user ID upon execution  设置文件所有者的id，即使是别的用户操作文件，也被认为是文件所有者在操作。<br>
+setgid set gruop ID upon execution 设置文件所在组的地id<br>
+这两种权限就是在执行某个特殊任务时候，需要任务执行者的权限得到临时提升。<br>
+比如 、/etc/passwd（用来存储账号信息）和/etc/shadow（存储密码信息）是两个非常关键的文件。都为root用户	才有写入的权限。<br>
+但是Linux中每个用户都可以通过passwd命令修改自己的密码信息。有些非root用户可以在Linux系统中增	加或者删除账号。<br>
+Linux系统为passwd命令设置了该权限，并且讲passwd命令所有者设置为root。因此别的用户也可以修改	这两个文件。<br>
+黏滞位（t表示，数字为1）与上面两种作用恰恰相反，/tmp目录是Linux为所有应用程序提供的临时目录。这个目录	对所有用户来说都是可度，可写的。</li>
+<li>3.显示文件权限<br>
+ls -l 文件路径<br>
+举例 ls -l /ect/passwd      输出  -rw-r--r-- 文件所有者的权限rw  文件所在组的访问权限  r   其他用户 r<br>
+ls -l /usr/bin/passwd   输出  -rwsr-xr-x 文件所有者的权限rws  文件所在组的访问权限  xr   其他用户 r<br>
+上面出现的s权限即为setuid 它占用的是所有者权限的第三个字符(也即是x所在位置)<br>
+而setgid是文件所在组权限的第三个字符。同样是x字符的位置。<br>
+如果是setuid或者setgid和x权限同时拥有，则会将两种权限叠加，用小写的字符s表示。<br>
+如果只设置了setuid或者setgid权限。没有x权限，则用大写S表示。<br>
+ls -l /                输出  drwxrwxrwt  14 root root  4096 3月  28 10:18 tmp<br>
+上面/tmp文件的权限的最后一组为rwt,即设置了黏滞位。<br>
+黏滞位占用其他用户权限的第三个字符，即x位置。同样如果同时设置了黏滞位和执行权限x，则用小写t表示，否则只设置了黏滞位，没有执行权限x，则用大写T表示。</li>
+<li>4.修改文件权限<br>
+chmod [option]...permission [,permission]...file...<br>
+option表示命令选项   -R  --recursive (该选项表示递归修改文件的权限，就是与他相关的所有文件都将被修改)<br>
+permission参数表示文件的权限。（字符串或数值表示）  +增加权限  -删除权限<br>
+1）字符方式修改权限<br>
+mkdir -p dir1/dir2/dir3创建目录   mkdir表示创建目录  -p 如果父目录不存在。则创建父目录<br>
+touch file   创建一个空白文件。<br>
+ls -l显示dir1的权限  drwxr-xr-x 下面通过chmod命令讲dir1的访问权限设置为所在组可写。<br>
+chmod g+w dir1  执行完后再查看 drwxrwxr-x<br>
+chmod g+w dir1  将前面增加的权限删除 再查看   drwxr-xr-x<br>
+用户可以修改多个权限组<br>
+chmod g+w,o+w dir1   drwxrwxrwx<br>
+chmod g+w-r,o-w dir1   drwx-wxr-x<br>
+上面的操作不会影响子目录下面的文件权限<br>
+2）数字方式修改权限<br>
+第一位表示所有者权限，第二位表示所在组权限，第三位表示其他用户权限，每位十进制书都是三种权限数值的和。<br>
+例如7表示文件可读，可写，可执行。7=4+2+1<br>
+（注意，切忌将关键文件的权限为了方便设置为777，这将引起安全隐患）<br>
+关于设置setuid和setgid以及黏滞位字符方式同理。但是如果是使用数字方式，只需要将数字置于最高位即可，将会形成4位数字 4751 4就是setuid权限  首位是特殊权限的数字  后面三位是普通权限）</li>
+<li>5.更改文件所有权<br>
+查看文件的所有权  ls -l  第三列为文件的所有者 第四列为文件的所属组<br>
+chown命令更改文件的所有权<br>
+chown [option]...[owner][:[group]] file...<br>
+option表示命令选项   -R  --recursive (该选项表示递归修改文件的权限，就是与他相关的所有文件都将被修改)<br>
+owner文件新的所有者 必须是系统中已经存在的有效账号<br>
+group文件的所属组，要是为空，意味着只更改文件的所有者，否则同时更改。<br>
+sudo chown root dir1  这里将dir1文件的所有者改成root<br>
+sudo命令用来以root用户的身份来执行某个命令<br>
+sudo chown root:root dir1</li>
+</ul>
+<h5 id="18创建文件">18.创建文件</h5>
+<p>1.使用touch命令创建文件 touch本身不是为了创建文件的（而是用来改变文件的时间戳的，但是你要修改的目录下没有此文件，就会创建一个空白文件）
+touch filename (注意，如果命名后面的文件已经存在，touch将会修改目标文件的时间戳为当前系统时间)<br>
+2.使用重定向创建文件<br>
+两种操作符输出重定向  分别为 &gt;和&gt;&gt;<br>
+区别：在目标文件已经存在的情况下  &gt;会覆盖已有文件，而&gt;&gt;则会将新的内容追加到已有的文件内容后面，不会清除原来的内容。<br>
+重定向创建空白文件 &gt; file.txt  或者 &gt;&gt; file.txt<br>
+除了创建空白文件，还可以将一些命令的输出结果保存到指定的文件中  ls -l &gt; filelist.txt  通过more filelist.txt命令来查看文件中内容<br>
+sudo find . -name &quot;*.txt&quot; &gt; txtfile查找.txt文件保存到 txtfile中<br>
+3.使用vi命令创建文件<br>
+vi demo.txt  按a,o,i大小写都行，进入编辑模式，编辑完后，按Esc,输入:wq</p>
+<h5 id="19显示文件-ls-ls-l-ls-il显示i节点-ls-la显示隐藏文件">19.显示文件 ls  ls -l    ls -il（显示i节点）  ls -la(显示隐藏文件)</h5>
+<p>显示文件的内容  cat 文件名（适合小文件）<br>
+at 文件名 | more （适合大文件，more实现分页）<br>
+cat file1.txt file2.txt 打开多个文件<br>
+cat -n 文件名  （可以显示行号）<br>
+more 命令 （将查询结构进行分页展示）<br>
+less 命令 （同样可以实现more命令的功能）<br>
+head 命令  （查看文件开头的前几行内容）  head -n(所要查看的行数) 15 文件<br>
+或者  head -c(所要展示的字符数) 30 文件  （Linux中一个汉字用三个字符表示）<br>
+tail 命令  (查看最后几行内容)<br>
+tail -f(可以随时检查目标文件是否发生变化，如果检查到文件内容有所增长(启动tamcat的时候，就可以通过这个		命令来动态查看tomcat的启动过程)
+Ctrl+C退出这个命令<br>
+则tail命令会把增长的部分实时输出到屏幕上)<br>
+tail -n  指定用户要输出的行数</p>
+<h5 id="20文件的常用操作">20.文件的常用操作</h5>
+<p>​        1.复制文件  cp [option]...  source(源文件或者目录) dest（目标文件或者目录）<br>
+​        2.移动文件  mv [option]...  source(源文件或者目录) dest（目标文件或者目录）假如目标地址已经有同名的文件，就	可以添加参数 -b 这个时候，
+​        会给原来文件创建一个备份，文件名是在原来文件后面家～符号<br>
+​        3.删除文件  rm [option]  file<br>
+​          rm -f :强制删除文件，不给出任何提示<br>
+​          rm -i :实现交互式文件删除，在删除文件时给出提示<br>
+​          rm -r :递归删除目录及其包含的文件和子目录<br>
+​          危险命令rm -rf 将会删除整个根文件系统中所有的文件<br>
+​        4.比较文件 diff [option]... file<br>
+​        5.重命名文件 mv hello.txt hello1.txt  移动文件的特例，就是不改变路径，只改变名称即可</p>
+<h5 id="21搜索文件">21.搜索文件</h5>
+<p>​        1.快速搜索文件：locate [option]... pattern(匹配模式)...   locat Linux学习<br>
+​        2.locate -b '\passwd'  精确匹配文件名，意味着，文件名只能是passwd，不包含其他字符<br>
+​        3.如果需要搜索以某个字符开头的文件，可以使用 locate  /etc/pm,表示etc目录下，以pm开头的文件列表<br>
+​        4.还可以使用* 或者？来匹配多个或一个字符<br>
+​        5.使用locate命令的时候查不到最新更新过得文件，因此使用之前先使用sudo updatedb命名更新数据库<br>
+​        6.locate命令使用绝对路径来匹配用户指定的搜索模式<br>
+​        7.按类型搜索：whereis [option] [-BMS directory... -f] name...<br>
+​        8.搜索二进制文件：which filename   which命令只在文件名中搜索，也不支持通配符<br>
+​        9.全功能搜索 find 命令<br>
+​          find [starting-point...](搜索的起始点，为空时，默认为当前工作目录) [expression]<br>
+​        10.文本内容筛选   grep  fgrep  egrep等等<br>
+​          grep [option] pattren [file...]   此命令一般不是单独使用，一般都是配合ps  ls等命令一起使用<br>
+​          筛选其他内容的输出结果<br>
+​          ps -ef | grep -i mysql<br>
+​          在grep中使用正则表达式<br>
+​        11.文本排序   sort [option]...[file]...<br>
+​           合并有序文件 sort -m file1 file2   合并之后新的内容依然有序</p>
+<h5 id="22文件的压缩和解压">22.文件的压缩和解压</h5>
+<p>​        1.压缩文件  zip  gzip  compress  bzip2<br>
+​         zip [option] zipfile file...<br>
+​         gzip [option] [name...]  name参数为要压缩的文件的列表，支持通配符<br>
+​         默认情况下gzip命令会逐个讲文件压缩，这个命令执行完后，会将源文件进行删除  扩展名为.gz<br>
+​         单独的gzip命令不可能将多个文件压缩成为一个文件，但是用户可以结合tar命令来实现这个操作<br>
+​         首先通过tar命令将所需要压缩的文件打包，然后再讲打包后的.tar文件压缩，就会形成.tar.gz压缩文件<br>
+​         compress命令  .Z扩展名<br>
+​         bzip2  .bz2扩展名<br>
+​         以上压缩命令，除了zip命令外，其他命令都不能讲多个文件压缩为成为一个单独文件，使用后三个命令时，结合使用tar命令<br>
+​        2.解压文件unzip gunzip uncompress  bunzip2</p>
+<h5 id="23目录管理">23.目录管理</h5>
+<p>​        1.显示当前工作目录<br>
+​          pwd<br>
+​        2.改变目录<br>
+​          cd [option] path<br>
+​        3.创建目录<br>
+​          mkdir [option]...directory...<br>
+​          常用的选项只有一个-p，该选项表示在创建目录时，如果父目录不存在，则先创建父目录。<br>
+​        4.移动目录<br>
+​          mv<br>
+​        5.复制目录<br>
+​          cp -r 目录<br>
+​        6.删除目录<br>
+​          rm -r 目录</p>
+<h5 id="24用户和用户组">24.用户和用户组</h5>
+<p>​       1.用户组和组标识号<br>
+​        用户标识号 用户整数值表示  取值为0的是超级用户root 1-499为系统用户，这些用户的作用是保证系统服务<br>
+​        正常运行，一般不会登录Linuc系统，500-60000为普通用户，这些用户可以登录系统，并且拥有一定权限。管理员添加<br>
+​        的用户一般会从这个范围分配用户标识号。<br>
+​        登录名和用户标识号不一定一一对应，实际上，Linux允许几个登录名对应同一个用户标识号。<br>
+​        用户组是一组权限和功能相类似的用户的集合。用户组的信息保存在  cat /etc/group文件中<br>
+​      2./etc/passwd文件   该文件存储了当前系统的用户账户信息。<br>
+​        此文件中每一行都由7个字段构成，字段之间用冒号隔开。<br>
+&quot;www-data: x:33:33:www-data:/var/www:/usr/sbin/nologin&quot;
+​        以上七个字段的名称分别如下：<br>
+​        登录名：口令：用户标识号：组标识号：注释：用户主目录：Shell程序<br>
+​      3./etc/shadow文件<br>
+​        影子文件，该文件包含了当前系统中的用户的密码以及密码的过期时间等信息<br>
+​      4./etc/group文件<br>
+​        该文件保存了当前系统中的用户组信息<br>
+​        组名：口令：组标识号：成员列表<br>
+​      5.添加用户：useradd命令<br>
+​        useradd [option] login<br>
+​      6.添加用户：adduser命令 通过adduser命令。可以添加普通用户，系统用户以及用户组<br>
+​        adduser [option] user<br>
+​      7.修改用户：usermod命令<br>
+​        usermod [options] login (login参数为要修改的用户的登录名)<br>
+​      8.删除用户：userdel命令<br>
+​        userdel [options] login (login为要删除的用户的登录名)<br>
+​      9.修改用户密码：passwd命令<br>
+​        passwd [options] login<br>
+​      10.显示用户信息：id命令<br>
+​        id [options] [user]<br>
+​      11.用户间切换：su命令<br>
+​        su [options] login<br>
+​      12.受限的特权：sudo命令<br>
+​        sudo [options] command</p>
+<h5 id="25用户组管理">25.用户组管理</h5>
+<p>​      1.添加用户组：groupadd命令<br>
+​         groupadd [options] group<br>
+​      2.添加用户组：addgroup命令<br>
+​         addgroup [组名]<br>
+​      3.修改用户组：groupmod命令<br>
+​         sudo groupmod -n managers manager<br>
+​         sudo groupmod -g 1008 managers<br>
+​      4.删除用户组：groupdel命令<br>
+​         sudo groupdel managers<br>
+​      5.Linux权限可以分为权限组、基本权限类型、特殊权限以及访问控制列表。<br>
+​      6.改变所有文件所有者：chown 命令<br>
+​         chown [options]... [owner][:[group]] file...<br>
+​      7.改变文件所属组：chgrp命令<br>
+​         例子：sudo chgrp joe doc<br>
+​      8.设置权限掩码：umask命令<br>
+​         umask 参数<br>
+​      9.修改文件访问权限：chmod命令<br>
+​         chmod [option]... mode[,mode]... file<br>
+​         chmod u=rwx,g=rw,o=r hello.sh<br>
+​         chmod u+x,g+w hello.sh<br>
+​      10.修改文件ACL：setfacl 命令<br>
+​         setfacl [option] file...<br>
+​      11.查询文件ACL：getfacl 命令</p>
+<p>如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx
+<img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/java-note">
+              <h3 class="post-title">
+                Java小试牛刀
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
