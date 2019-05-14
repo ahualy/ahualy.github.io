@@ -1,0 +1,723 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>shiro笔记 | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1557828570726">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1557828570726" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              shiro笔记
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-14 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <h3 id="shiro学习笔记">shiro学习笔记</h3>
+<h5 id="demo编写">Demo编写</h5>
+<h6 id="jar包准备">jar包准备</h6>
+<p><a href="https://github.com/zixi5534/LinuxAndJavaNote/tree/master/shiro%E7%9A%84jar">Spring-Shiro Jar包</a></p>
+<h6 id="webxml配置">web.xml配置</h6>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+ &lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+	xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; 
+	xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee 
+	http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot; 
+	id=&quot;WebApp_ID&quot; version=&quot;3.1&quot;&gt;
+	
+	&lt;!-- 配置spring核心监听器，默认会以 /WEB-INF/applicationContext.xml作为配置文件 --&gt;
+	&lt;listener&gt;
+		&lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+	&lt;/listener&gt;
+	&lt;!-- contextConfigLocation参数用来指定Spring的配置文件 --&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+		&lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	
+	&lt;!-- 定义Spring MVC的前端控制器 --&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;
+        org.springframework.web.servlet.DispatcherServlet
+    &lt;/servlet-class&gt;
+    
+    &lt;init-param&gt;
+      &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+      &lt;param-value&gt;classpath:springmvc-config.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+  
+  &lt;!-- 让Spring MVC的前端控制器拦截所有请求 --&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  
+  &lt;!-- Shiro Filter is defined in the spring application context: --&gt;
+  &lt;!-- 这是入口，拦截前端访问的所有资源 
+     1.配置shiro的shiroFilter
+     2.DelegatingFilterProxy实际上是Filter的一个代理对象，默认情况下，Spring 会到 IOC容器中
+                     查找和&lt;filter-name&gt;对应filter bean,也可以通过targetBeanName的初始化参数来配置filter bean 的id
+  --&gt;
+    &lt;filter&gt;
+        &lt;filter-name&gt;shiroFilter&lt;/filter-name&gt;
+        &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;targetFilterLifecycle&lt;/param-name&gt;
+            &lt;param-value&gt;true&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;!-- &lt;init-param&gt;
+           &lt;param-name&gt;targetBeanName&lt;/param-name&gt;
+           &lt;param-value&gt;abc&lt;/param-value&gt;
+        &lt;/init-param&gt; --&gt;
+    &lt;/filter&gt;
+
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;shiroFilter&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
+  
+  &lt;!-- 编码过滤器 --&gt;
+  &lt;filter&gt;
+		&lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+		&lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;encoding&lt;/param-name&gt;
+			&lt;param-value&gt;UTF-8&lt;/param-value&gt;
+		&lt;/init-param&gt;
+ &lt;/filter&gt;
+	&lt;filter-mapping&gt;
+		&lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<h6 id="springmvc-configxml配置">springmvc-config.xml配置</h6>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd     
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd&quot;&gt;
+    
+    &lt;!-- 自动扫描该包，SpringMVC会将包下用了@controller注解的类注册为Spring的controller --&gt;
+    &lt;context:component-scan base-package=&quot;com.rain.controller&quot;/&gt;
+    &lt;!-- 设置默认配置方案 --&gt;
+    &lt;mvc:annotation-driven/&gt;
+    &lt;!-- 使用默认的Servlet来响应静态文件 --&gt;
+    &lt;mvc:default-servlet-handler/&gt;
+    &lt;!-- 定义Spring MVC的拦截器 --&gt;
+    &lt;!-- 视图解析器  --&gt;
+     &lt;bean id=&quot;viewResolver&quot;
+          class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt; 
+        &lt;!-- 前缀 --&gt;
+        &lt;property name=&quot;prefix&quot;&gt;
+            &lt;value&gt;/&lt;/value&gt;
+        &lt;/property&gt;
+        &lt;!-- 后缀 --&gt;
+        &lt;property name=&quot;suffix&quot;&gt;
+            &lt;value&gt;.jsp&lt;/value&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+<h6 id="applicationcontextxml配置">applicationContext.xml配置</h6>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+	xmlns:mybatis=&quot;http://mybatis.org/schema/mybatis-spring&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+	xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+	xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+	xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans 
+			            http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+			            http://www.springframework.org/schema/context
+			            http://www.springframework.org/schema/context/spring-context-4.2.xsd
+			            http://www.springframework.org/schema/mvc
+			            http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+			            http://www.springframework.org/schema/tx
+			            http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+			            http://mybatis.org/schema/mybatis-spring 
+			            http://mybatis.org/schema/mybatis-spring.xsd &quot;&gt;
+    &lt;!-- 1.配置 SecurityManager--&gt;
+    &lt;bean id=&quot;securityManager&quot; class=&quot;org.apache.shiro.web.mgt.DefaultWebSecurityManager&quot;&gt;
+        &lt;property name=&quot;cacheManager&quot; ref=&quot;cacheManager&quot;/&gt;
+        &lt;!--只有一个realm的情况下
+        &lt;property name=&quot;realm&quot; ref=&quot;jdbcRealm&quot;/&gt; --&gt;
+        &lt;!-- 多个realm的情况下 --&gt;
+        &lt;property name=&quot;authenticator&quot; ref=&quot;authenticator&quot;&gt;&lt;/property&gt;
+        &lt;property name=&quot;realms&quot;&gt;
+          &lt;list&gt;
+             &lt;ref  bean=&quot;jdbcRealm&quot;/&gt;
+             &lt;ref  bean=&quot;secondRealm&quot;/&gt;
+          &lt;/list&gt;
+       &lt;/property&gt;
+    &lt;/bean&gt;
+     &lt;!-- 
+     2.配置 CacheManager
+     2.1需要加入ehcache的jar包及其配置文件
+     --&gt;
+    &lt;bean id=&quot;cacheManager&quot; class=&quot;org.apache.shiro.cache.ehcache.EhCacheManager&quot;&gt;
+        &lt;property name=&quot;cacheManagerConfigFile&quot; value=&quot;classpath:ehcache.xml&quot;/&gt; 
+    &lt;/bean&gt;
+    
+    &lt;!--给两个realm配置一个认证器  --&gt;
+  &lt;bean id = &quot;authenticator&quot; class=&quot;org.apache.shiro.authc.pam.ModularRealmAuthenticator&quot;&gt;
+      &lt;!--  &lt;property name=&quot;realms&quot;&gt;
+          &lt;list&gt;
+             &lt;ref  bean=&quot;jdbcRealm&quot;/&gt;
+             &lt;ref  bean=&quot;secondRealm&quot;/&gt;
+          &lt;/list&gt;
+       &lt;/property&gt; --&gt;
+      &lt;!--  更换验证策略 --&gt;
+       &lt;property name=&quot;authenticationStrategy&quot;&gt;
+           &lt;bean class=&quot;org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy&quot;&gt;&lt;/bean&gt;
+       &lt;/property&gt;
+    &lt;/bean&gt; 
+     &lt;!--
+      3.配置Realm
+      3.1直接配置实现了Realm接口的Bean
+      --&gt;   
+      &lt;!-- 第一个realm --&gt;
+    &lt;bean id=&quot;jdbcRealm&quot; class=&quot;com.rain.controller.realms.ShiroRealms&quot;&gt;
+        &lt;property name=&quot;credentialsMatcher&quot;&gt;
+           &lt;bean class=&quot;org.apache.shiro.authc.credential.HashedCredentialsMatcher&quot;&gt;
+              &lt;property name=&quot;hashAlgorithmName&quot; value=&quot;MD5&quot;&gt;&lt;/property&gt;
+              &lt;!-- 指定加密的次数 --&gt;
+              &lt;property name=&quot;hashIterations&quot; value=&quot;1024&quot;&gt;&lt;/property&gt;
+           &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;!-- 第二个realm --&gt;
+    &lt;bean id=&quot;secondRealm&quot; class=&quot;com.rain.controller.realms.SecondRealm&quot;&gt;
+        &lt;property name=&quot;credentialsMatcher&quot;&gt;
+           &lt;bean class=&quot;org.apache.shiro.authc.credential.HashedCredentialsMatcher&quot;&gt;
+              &lt;property name=&quot;hashAlgorithmName&quot; value=&quot;SHA1&quot;&gt;&lt;/property&gt;
+              &lt;!-- 指定加密的次数 --&gt;
+              &lt;property name=&quot;hashIterations&quot; value=&quot;1024&quot;&gt;&lt;/property&gt;
+           &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+     &lt;!-- 
+     4.配置生命周期的lifecycleBeanPostProcessor.可以自动的来调用配置在spring IOC容器中shiro bean 的生命周期方法
+      --&gt;
+    &lt;bean id=&quot;lifecycleBeanPostProcessor&quot; class=&quot;org.apache.shiro.spring.LifecycleBeanPostProcessor&quot;/&gt;
+
+    &lt;!-- 
+    5.启用IOC容器中使用shiro的注解，但必须在配置了lifecycleBeanProcessor之后才可以使用
+     --&gt;
+    &lt;!-- Enable Shiro Annotations for Spring-configured beans.  Only run after
+         the lifecycleBeanProcessor has run: --&gt;
+    &lt;bean class=&quot;org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator&quot;
+          depends-on=&quot;lifecycleBeanPostProcessor&quot;/&gt;
+    &lt;bean class=&quot;org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor&quot;&gt;
+        &lt;property name=&quot;securityManager&quot; ref=&quot;securityManager&quot;/&gt;
+    &lt;/bean&gt;
+    &lt;!-- 
+    6.配置shiroFilter
+    6.1   id必须和web.xml文件中配置的DelegatingFilterProxy的&lt;filter-name&gt;一致
+                              如果不一致会抛出NoSuchBeanDefinitionException: No bean named 'shiroFilter' is defined
+                             因为shiro回来IOC容器中查找和&lt;filter-name&gt;名字对应的 filter bean.
+     --&gt;
+    &lt;bean id=&quot;shiroFilter&quot; class=&quot;org.apache.shiro.spring.web.ShiroFilterFactoryBean&quot;&gt;
+        &lt;property name=&quot;securityManager&quot; ref=&quot;securityManager&quot;/&gt;
+        &lt;!--登录页面--&gt;
+        &lt;property name=&quot;loginUrl&quot; value=&quot;/login.jsp&quot;/&gt;
+        &lt;!-- 登录成功的页面 --&gt;
+        &lt;property name=&quot;successUrl&quot; value=&quot;/list.jsp&quot;/&gt;
+        &lt;!--没有权限的页面 --&gt;
+        &lt;property name=&quot;unauthorizedUrl&quot; value=&quot;/unauthorized.jsp&quot;/&gt;
+        &lt;!-- 配置哪些页面需要受保护
+                                       以及访问这些页面需要的权限
+             1).  anon表示可以被匿名访问     (即不需要登录就可以访问)
+             2).  authc表示必须认证之后（即登陆之后）才可以被访问的页面    
+             3).  logout表示登出的过滤器    
+             4).  roles 角色过滤器 
+            --&gt; 
+           
+         &lt;property name=&quot;filterChainDefinitionMap&quot; ref=&quot;filterChainDefinitionMap&quot;&gt;&lt;/property&gt;   
+         
+        &lt;!-- &lt;property name=&quot;filterChainDefinitions&quot;&gt;
+        拦截匹配以第一次匹配优先
+            &lt;value&gt;
+                /login.jsp = anon
+                /shiro/login = anon
+                /shiro/logout = logout
+                /user.jsp = roles[user]
+                /admin.jsp = roles[admin]
+                
+                # everything else requires authentication:
+                /** = authc
+            &lt;/value&gt;
+           
+             这种情况下，/list.jsp不会被访问到，因为，前面已经优先匹配了/**  
+             &lt;value&gt;
+                /login.jsp = anon
+                # everything else requires authentication:
+                /** = authc
+               /** =authc
+                /list.jsp = anon
+            &lt;/value&gt;
+        &lt;/property&gt; --&gt;
+    &lt;/bean&gt;
+   
+    &lt;bean id=&quot;shiroService&quot; class=&quot;com.rain.service.ShiroService&quot;&gt;&lt;/bean&gt;
+    &lt;!--配置一个bean，该bean实际上是一个Map,通过实例工厂方法的方式  --&gt;
+    &lt;bean id=&quot;filterChainDefinitionMap&quot; factory-bean=&quot;filterChainDefinitionMapBuilder&quot;
+    factory-method=&quot;bulidFilterChainDefinitionMap&quot;&gt;&lt;/bean&gt;
+    &lt;bean id=&quot;filterChainDefinitionMapBuilder&quot; 
+    class=&quot;com.rain.factory.FilterChainDefinitionMapBuilder&quot;&gt;&lt;/bean&gt;
+&lt;/beans&gt;
+
+</code></pre>
+<h6 id="ehcachexml配置">ehcache.xml配置</h6>
+<pre><code class="language-xml">&lt;ehcache&gt;
+    &lt;!--  
+        指定一个目录：当 EHCache 把数据写到硬盘上时, 将把数据写到这个目录下.
+    --&gt;     
+    &lt;diskStore path=&quot;F:\\tempDirectory&quot;/&gt;
+
+    &lt;!--  
+        设置缓存的默认数据过期策略 
+    --&gt;    
+    &lt;defaultCache
+        maxElementsInMemory=&quot;10000&quot;
+        eternal=&quot;false&quot;
+        timeToIdleSeconds=&quot;120&quot;
+        timeToLiveSeconds=&quot;120&quot;
+        overflowToDisk=&quot;true&quot;
+        /&gt;
+
+       &lt;!--  
+           设定具体的命名缓存的数据过期策略。每个命名缓存代表一个缓存区域
+           缓存区域(region)：一个具有名称的缓存块，可以给每一个缓存块设置不同的缓存策略。
+           如果没有设置任何的缓存区域，则所有被缓存的对象，都将使用默认的缓存策略。即：&lt;defaultCache.../&gt;
+           Hibernate 在不同的缓存区域保存不同的类/集合。
+            对于类而言，区域的名称是类名。如:com.atguigu.domain.Customer
+            对于集合而言，区域的名称是类名加属性名。如com.atguigu.domain.Customer.orders
+       --&gt;
+       &lt;!--  
+           name: 设置缓存的名字,它的取值为类的全限定名或类的集合的名字 
+           maxElementsInMemory: 设置基于内存的缓存中可存放的对象最大数目 
+         
+           eternal: 设置对象是否为永久的, true表示永不过期, 此时将忽略timeToIdleSeconds 和 timeToLiveSeconds属性; 默认值是false 
+        　 timeToIdleSeconds:设置对象空闲最长时间,以秒为单位, 超过这个时间,对象过期。当对象过期时,EHCache会把它从缓存中清除。如果此值为0,表示对象可以无限期地　　　　　　　　　　　　　　　　  处于空闲状态。 
+           timeToLiveSeconds:设置对象生存最长时间,超过这个时间,对象过期。如果此值为0,表示对象可以无限期地存在于缓存中. 
+　　　　　　　　　　　　　　　　该属性值必须大于或等于 timeToIdleSeconds 属性值 
+        
+           overflowToDisk:设置基于内存的缓存中的对象数目达到上限后,是否把溢出的对象写到基于硬盘的缓存中 
+       --&gt;
+    &lt;cache name=&quot;com.atguigu.hibernate.entities.Employee&quot;
+        maxElementsInMemory=&quot;1&quot;
+        eternal=&quot;false&quot;
+        timeToIdleSeconds=&quot;300&quot;
+        timeToLiveSeconds=&quot;600&quot;
+        overflowToDisk=&quot;true&quot;
+        /&gt;
+    &lt;cache name=&quot;com.atguigu.hibernate.entities.Department.emps&quot;
+        maxElementsInMemory=&quot;1000&quot;
+        eternal=&quot;true&quot;
+        timeToIdleSeconds=&quot;0&quot;
+        timeToLiveSeconds=&quot;0&quot;
+        overflowToDisk=&quot;false&quot;
+        /&gt;
+&lt;/ehcache&gt;
+</code></pre>
+<p>1.获取当前的Subject，调用SecurityUtils.getSubject();方法</p>
+<p>2.测试当前的用户是否已经被认证，即是否已经被登陆     调用subject的isAuthenticated()方法</p>
+<p>3.若没有被认证，则把用户名和密码封装为UsernamePasswordToken对象</p>
+<ul>
+<li>创建一个表单页面</li>
+<li>把请求提交到springmvc的handler</li>
+<li>来获取用户名和密码.</li>
+</ul>
+<p>4.执行登录，调用subject 的login(HostAuthenticationToken)方法  UsernamePasswordToken是HostAuthenticationTokend的实现类</p>
+<p>5.自定义Realm的方法，从数据库中获取对应的记录，返回给shiro</p>
+<ul>
+<li>如何创建自定义的Realm</li>
+<li>实际上需要继承org.apache.shiro.realm.AuthenticatingRealm 类</li>
+<li>实现doGetAuthenticationInfo(AuthenticationToken)方法</li>
+</ul>
+<p>6.由shiro完成密码的比对。</p>
+<ul>
+<li>密码的比对  通过AuthenticatingRealm  的credentialsMatcher 属性来进行密码的比对</li>
+</ul>
+<p>7.如何把一个字符串加密为md5</p>
+<ul>
+<li>替换当前Realm的credentialsMatcher 属性 ，直接使用HashedCredentialsMatcher  对象，并设置加密算法即可</li>
+</ul>
+<p>8.为什么使用MD5盐值加密：因为如果两个用户的密码一样，MD5加密完后结果不一样</p>
+<p>9.如何做到MD5盐值加密</p>
+<ul>
+<li>在doGetAuthenticationInfo() 方法返回值创建SimpleAuthenticationInfo对象的时候，需要使用SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName) 构造器</li>
+<li>使用ByteSource.Util.bytes(“”);来计算盐值</li>
+<li>盐值需要唯一：一般使用随机字符串或 user id（即username）</li>
+<li>使用new SimpleHash(algorithmName, source, salt, hashIterations); 来计算盐值加密后密码的值</li>
+</ul>
+<p>10.授权</p>
+<h6 id="shiro支持三种授权方式">Shiro支持三种授权方式</h6>
+<ul>
+<li>编程式：通过写if/else 授权代码块完成</li>
+<li>注解式：通过在执行的java方法上放置注解完成，没有权限将抛出相应异常</li>
+<li>JSP标签：在JSP页面通过相应的标签完成</li>
+</ul>
+<h6 id="shiro中默认拦截器过滤器">Shiro中默认拦截器（过滤器）</h6>
+<p>​	shiro内置了很多默认的拦截器，比如身份验证，授权等相关。默认拦截器可以参考org.apache.shiro.web.filter.mgt.DefaultFilter中的枚举拦截器</p>
+<pre><code class="language-java">public enum DefaultFilter {
+        anon(AnonymousFilter.class),   
+        authc(FormAuthenticationFilter.class),  //验证相关
+        authcBasic(BasicHttpAuthenticationFilter.class),
+        logout(LogoutFilter.class),
+        noSessionCreation(NoSessionCreationFilter.class),
+        perms(PermissionsAuthorizationFilter.class),
+        port(PortFilter.class),
+        rest(HttpMethodPermissionFilter.class),
+        roles(RolesAuthorizationFilter.class),  //授权相关
+        ssl(SslFilter.class),
+        user(UserFilter.class);
+}	
+</code></pre>
+<h6 id="授权需要继承的类-authorizingrealm-类并实现一个抽象方法-dogetauthorizationinfo">授权需要继承的类  AuthorizingRealm 类，并实现一个抽象方法 doGetAuthorizationInfo()</h6>
+<p>​	AuthorizingRealm 类继承自AuthenticatingRealm 但没有实现AuthenticatingRealm  中的 doGetAuthenticationInfo方法。所以认证和授权只需要继承 AuthorizingRealm  就可以了，同时实现他的两个抽象方法</p>
+<pre><code class="language-java">        //认证方法的实现
+		@Override
+		protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws 			AuthenticationException {
+        System.out.println(&quot;[FirstRealm doGetAuthenticationInfo]&quot;);
+		//1.把 AuthenticationToken 转换为UsernamePasswordToken
+		UsernamePasswordToken upToken =(UsernamePasswordToken)token;
+		
+		//2.从UsernamePasswordToken中来获取username
+		String username = upToken.getUsername();
+		
+		//3.调用数据库的方法，从数据库中查询username对应的用户记录
+		System.out.println(&quot;从数据库中获取username: &quot;+username+&quot; 所对应的用户信息.&quot;);
+		
+		//4.若用户不存在，则可以抛出异常UnknownAccountException异常
+		if(&quot;unknown&quot;.equals(username)) {
+			throw new UnknownAccountException(&quot;用户不存在&quot;);
+		}
+		
+		//5.根据用户信息的情况决定是否需要抛出其他的AuthenticationException异常
+		if(&quot;monster&quot;.equals(username)) {
+			//比如被锁定异常
+			throw new LockedAccountException(&quot;用户被锁定&quot;);
+		}
+		
+		//6.根据用户的情况，来构建AuthenticationInfo对象并返回，通常使用的实现类为		     SimpleAuthenticationInfo
+		//以下信息是从数据库中获取的
+		//1.principal:认证的实体信息，可以使username，也可以是数据表对应的用户实体类对象
+		Object principal  = username;
+		//2.credentials:密码（从数据库中获取的密码）  123456   MD5加密1024次 fc1709d0a95a6be30bc5926fdb7f22f4
+		Object credentials = null;//&quot;fc1709d0a95a6be30bc5926fdb7f22f4&quot;;
+		if(&quot;admin&quot;.equals(username)) {
+			credentials=&quot;038bdaf98f2037b31f1e75b5b4c9b26e&quot;;
+		}else if(&quot;user&quot;.equals(username)){
+			credentials=&quot;098d2c478e9c11555ce2823231e02ec1&quot;;
+		}
+		//3.realmName:当前realm对象的name.调用父类的getName()方法即可
+		String realmName = getName();
+		//4.盐值   这里使用用户名为盐原始值，因为用户名是唯一的
+		ByteSource  credentialsSalt = ByteSource.Util.bytes(username);
+		SimpleAuthenticationInfo info = null;//new SimpleAuthenticationInfo(principal, credentials, realmName);
+		info = new SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName);
+		
+		return info;
+	}
+        //实现授权的方法
+  		@Override 
+  		protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+	    // 1.    从PrincipalCollection 中获取登录用户的信息
+  			Object principal = principals.getPrimaryPrincipal();
+  		//2.  利用登录的用户信息 来获取当前用户的角色或者权限  可能需要查询数据库
+  			Set&lt;String&gt; roles = new HashSet&lt;String&gt;();
+  			roles.add(&quot;user&quot;);
+  			if(&quot;admin&quot;.equals(principal)) {
+  				//意味着如果是admin登录就同时拥有user的权限
+  				roles.add(&quot;admin&quot;);
+  			}
+  		//3.  因为AuthorizationInfo 是一个接口，所以必须找到他的实现类，故创建SimpleAuthorizationInfo	         实现类对象，并设置roles属性
+  		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roles);
+  		//4. 返回 SimpleAuthorizationInfo对象
+  	    System.out.println(&quot;---&gt;doGetAuthorizationInfo...&quot;);
+  		return info;
+}
+</code></pre>
+<h6 id="shiro标签">Shiro标签</h6>
+<ul>
+<li>
+<p>Shiro提供了JSTL标签用于在JSP页面进行权限控制，如根据登录用户显示相应的页面按钮。</p>
+</li>
+<li>
+<p>guest标签：用户没有身份验证时显示相应的信息，即游客访问信息。</p>
+<pre><code class="language-jsp">&lt;shiro:guest&gt;
+    欢迎游客访问，&lt;a href=&quot;login.jsp&quot;&gt;登录&lt;/a&gt;
+&lt;/shiro:guest&gt;
+</code></pre>
+</li>
+<li>
+<p>user标签：用户已经经过认证/<strong>记住我</strong>登录后显示相应的信息。</p>
+<pre><code class="language-jsp">&lt;shiro:user&gt;
+    欢迎[&lt;shiro:principal/&gt;]登录，&lt;a href=&quot;login.jsp&quot;&gt;登录&lt;/a&gt;
+&lt;/shiro:user&gt;
+</code></pre>
+</li>
+<li>
+<p>authenticated标签：用户已经身份验证通过，即Subject.login登录成功，<strong>不是记住我登录的</strong></p>
+<pre><code class="language-jsp">&lt;shiro:authenticated&gt;
+    用户[&lt;shiro:principal/&gt;]已身份验证通过
+&lt;/shiro:authenticated&gt;
+</code></pre>
+</li>
+<li>
+<p>notAuthenticated标签：用户未进行身份验证，即没有调用Subject.login登录，<strong>包括记住我自动登录的</strong>也属于为进行身份验证。</p>
+<pre><code class="language-jsp">&lt;shiro:notAuthenticated&gt;
+    未身份验证，（包括记住我）
+&lt;/shiro:notAuthenticated&gt;
+</code></pre>
+</li>
+<li>
+<p>pincipal标签：<strong>显示用户身份信息</strong>，默认调用Subject.getPincipal()获取，即Primary Pincipal.</p>
+<pre><code class="language-jsp">&lt;shiro:principal property=&quot;username&quot;/&gt;
+</code></pre>
+</li>
+<li>
+<p>hasRole标签：如果当前Subject有角色将显示body体内容</p>
+<pre><code class="language-jsp">&lt;shiro:hasRole&gt;
+    用户[&lt;shiro:principal/&gt;]拥有角色admin&lt;br/&gt;
+&lt;/shiro:hasRole&gt;
+</code></pre>
+</li>
+<li>
+<p>hasAnyRoles标签：如果当前Subject有任意一个角色(或关系)将显示body体内容</p>
+<pre><code class="language-jsp">&lt;shiro:hasAnyRoles&gt;
+    用户[&lt;shiro:principal/&gt;]拥有角色admin 或user&lt;br/&gt;
+&lt;/shiro:hasAnyRoles&gt;
+</code></pre>
+</li>
+<li>
+<p>lacksRole：如果当前Subject没有角色将显示body体内容</p>
+<pre><code class="language-jsp">&lt;shiro:lacksRole name=&quot;name&quot;&gt;
+    用户[&lt;shiro:principal/&gt;]没有角色admin&lt;br/&gt;
+&lt;/shiro:lacksRole&gt;
+</code></pre>
+</li>
+<li>
+<p>hasPermission标签：如果当前Subject有角色将显示body体内容</p>
+<pre><code class="language-jsp">&lt;shiro:hasPermission name=&quot;user:create&quot;&gt;
+    用户[&lt;shiro:principal/&gt;]拥有权限user:create&lt;br/&gt;
+&lt;/shiro:hasPermission&gt;
+</code></pre>
+</li>
+<li>
+<p>lackPermission标签：如果当前Subject没有权限将显示body体内容</p>
+<pre><code class="language-jsp">&lt;shiro:lackPermission name=&quot;org:create&quot;&gt;
+    用户[&lt;shiro:principal/&gt;]拥有权限org:create&lt;br/&gt;
+&lt;/shiro:lackPermission&gt;
+</code></pre>
+</li>
+</ul>
+<h6 id="权限注解">权限注解</h6>
+<ul>
+<li>
+<p>@RequiresAuthentication：表示当前Subject已经通过login进行了身份验证；即Subject.isAuthenticated()返回true</p>
+</li>
+<li>
+<p>@RequiresUser：表示当前Subject已经身份验证或者通过<strong>记住我</strong>登录</p>
+</li>
+<li>
+<p>@RequiresGuest：表示当前Subject没有身份验证或者通过<strong>记住我</strong>登录过，即使游客身份</p>
+</li>
+<li>
+<p>@RequiresRoles(value={&quot;admin&quot;,&quot;user&quot;},logical=Logical.AND)：表示当前Subject需要角色admin 和 user</p>
+</li>
+<li>
+<p>@RequiresPermissions(value={&quot;user:a&quot;,&quot;user:b&quot;},logical=Logical.OR)：表示当前Subject需要权限user:a和 user:b</p>
+</li>
+</ul>
+<h6 id="会话管理">会话管理</h6>
+<ul>
+<li>Shiro提供了完整的企业级会话管理功能，不依赖于底层容器（如web容器tomcat），不管JavaSE还是JavaEE环境都可以使用，提供了会话管理，会话事件监听，会话存储/持久化，容器无关的集群，失效/过期支持，对Web的透明支持，SSO单点登录的支持等特性。</li>
+</ul>
+<h6 id="会话相关的api">会话相关的API</h6>
+<ul>
+<li>Subject.getSession()：即可获取会话；其等价于Subject.getSession(true)，即如果当前没有创建Session对象会创建一个；Subject.getSession(false),如果当前没有创建Session则返回null</li>
+<li>ssession.getId()：获取当前会话的唯一标识</li>
+<li>session.getHost()：获取当前Subjct的主机地址</li>
+<li>session.getTimeout()   &amp;  session.getTimeout(毫秒)：获取/设置当前Session的过期时间</li>
+<li>session.getStartTimestamp()   &amp;   session.getLastAccessTime()：获取会话的启动时间及最后访问时间；如果是JavaSE应用需要自己定期调用session.touch()去更新最后访问时间；如果是web应用，每次进入ShiroFilter都会自动调用session.touch()去更新最后访问时间</li>
+<li>session.touch() &amp; session.stop()：更新会话最后访问时间及销毁会话；当Subject.logout()时会自动调用stop方法来销毁会话，如果在web中，调用HttpSessiojn.invalidate()也会自动调用Shiro Session.stop()方法进行销毁Shiro会话</li>
+<li>session.setAttribute(key, val)  &amp;  session.getAttribute(key)    &amp;    session.removeAttribute(key)：设置/获取/删除会话属性；在整个会话范围内都可以对这些属性进行操作</li>
+</ul>
+<h6 id="sessiondao">SessionDao</h6>
+<ul>
+<li>AbstractSessionDao 提供了SessionDao的基础实现，如生成会话ID等</li>
+<li>CachingSessionDao提供了对开发者透明的会话缓存的功能，需要设置相应的CacheManager</li>
+<li>MemorySessionDao直接在内存中进行会话的维护</li>
+<li>EnterpriseCacheSessionDao提供了缓存功能的会话维护，默认情况下使用MapCache实现，内部使用ConCurrentHashMap保存缓存的会话</li>
+</ul>
+<h6 id="shiro-缓存">Shiro  缓存</h6>
+<ul>
+<li>CacheManagerAware 接口  ：Shiro内部相应的组件（DefaultSecurityManager）会自动检测相应的对象（如Realm）是都已经实现了CacheManagerAware并自动注入了相应的CacheManager</li>
+<li>Realm缓存：Shiro提供了CachingRealm，其实现了CacheManagerAware接口，提供了缓存的一些基础实现；AuthenticatingRealm及AuthorizingRealm也分别提供了对AuthenticationInfo 和AuthorizationInfo信息的缓存</li>
+</ul>
+<h6 id="rememberme记住我">RememberMe(记住我)</h6>
+<ul>
+<li>Shiro提供了记住我（RememberMe）的功能，比如访问如淘宝等一些网站的时候，关闭了浏览器，下次在打开时还是能记住你是谁，下次访问时无需再登录即可访问，基本流程如下</li>
+<li>1.首先在登录页面选中RememberMe 然后登录成功；如果是浏览器登录，一般会把RememberMe的Cookie写到客户端并保存下来；</li>
+<li>2.关闭浏览器再重新打开，会发现浏览器还是会记住你的；</li>
+<li>3.访问一般的网页服务器端还是知道你是谁，且能正常访问；</li>
+<li>4.但是比如我们访问淘宝时，如果要查看我的订单或进行支付时，此事还是需要再进行身份认证的，以确保当前用户是你。</li>
+</ul>
+<h6 id="认证和记住我的区别">认证和记住我的区别</h6>
+<ul>
+<li>subject.isAuthenticated() ：表明用户进行了身份验证登录的；也就是说一定使用了subject.login() 方法进行了登录</li>
+<li>subject.isRememered()：表示用户是通过记住我登录的，此时坑能并不是真正的你在访问</li>
+<li>两者二选一，即 subject.isAuthenticated()==true，则subject.isRememered()==false;反之一样；</li>
+<li>建议：
+<ul>
+<li>访问一般网页：个人在主页之类的。我们使用user拦截器即可，user拦截器只要用户登录（isRememered()||isAuthenticated()）即可访问成功；</li>
+<li>访问特殊网页：如我的订单，提交订单页面，我们使用authc拦截器即可，authc连接器会判断用户是否通过subject.login(isAuthenticated()==true)登录的，如果是才放行，否则会跳转到登录页面叫你重新登录。</li>
+</ul>
+</li>
+</ul>
+<p><strong>声明</strong>     未经许可，禁止转载<br>
+如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx
+<img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/hadoop-second">
+              <h3 class="post-title">
+                Hadoop系列之hadoop生态圈
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
