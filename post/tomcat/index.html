@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>About Ahualy | Ahualy</title>
+<title>Tomcat环境变量配置 | Ahualy</title>
 <link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1557912307686">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
@@ -76,28 +76,63 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              About Ahualy
+              Tomcat环境变量配置
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-17 ·
+                · 2019-05-15 ·
               </time>
               
             </div>
             
             <div class="post-content">
-              <h4 id="about-ahualy">About Ahualy</h4>
-<p>1.在这里，我将从一个小白开始，记录自己编程学习过程中遇到的问题，解决的方案，分享自己的经验，记录一些生活中有趣的事情。</p>
-<p>2.编程并非孤独的旅行，路边还有你们。</p>
-<p>3.这是自己搭建的第一个博客，一下午的时间完成了博客的部署，不得不说github的强大与魅力,
-同时也感谢Gridea提供的友好界面，简化了我很多的git步骤，友好的编写环境，配置，部署，
-预览，调试，全程一条龙。</p>
-<p>4.欢迎交流，一切将从这里开始. . . . . .</p>
+              <h4 id="一-tomcat环境变量配置">一、Tomcat环境变量配置</h4>
+<ol>
+<li></li>
+</ol>
+<p><img src="https://ahualy.github.io//post-images/1557911954547.png" alt=""></p>
+<ol start="2">
+<li></li>
+</ol>
+<p><img src="https://ahualy.github.io//post-images/1557911958863.png" alt="">
+3.</p>
+<p><img src="https://ahualy.github.io//post-images/1557911968999.png" alt="">
+4.
+<img src="https://ahualy.github.io//post-images/1557911978890.png" alt=""></p>
+<p><strong>同样的操作新建三次</strong><br>
+（1）变量名  CATALINA_HOME
+<img src="https://ahualy.github.io//post-images/1557912006080.png" alt=""></p>
+<p>（2）变量名  CATALINA_Base
+<img src="https://ahualy.github.io//post-images/1557912009682.png" alt=""></p>
+<p>（3）变量名  TOMCAT_HOME
+<img src="https://ahualy.github.io//post-images/1557912023188.png" alt=""></p>
+<p>（4）JDK环境配置（要是已经存在，就不需新建配置）  变量名 JAVA_HOME
+<img src="https://ahualy.github.io//post-images/1557912028079.png" alt=""></p>
+<h4 id="二-tomcat部署web项目">二、Tomcat部署web项目</h4>
+<h5 id="1eclipse中输出war包">1.eclipse中输出war包</h5>
+<p><img src="https://ahualy.github.io//post-images/1557912032459.png" alt=""></p>
+<h5 id="2将war包放在tomcat中webapps中">2.将war包放在Tomcat中webapps中</h5>
+<p><img src="https://ahualy.github.io//post-images/1557912077423.png" alt=""></p>
+<h4 id="三-tomcat运行web项目">三、Tomcat运行web项目</h4>
+<h5 id="1tomcat下bin路径下找到startupbat运行即可">1.Tomcat下bin路径下，找到startup.bat，运行即可</h5>
+<p><img src="https://ahualy.github.io//post-images/1557912125486.png" alt=""></p>
+<p><img src="https://ahualy.github.io//post-images/1557912129338.png" alt=""></p>
+<h5 id="2运行成功界面">2.运行成功界面</h5>
+<p><img src="https://ahualy.github.io//post-images/1557912138347.png" alt=""></p>
 
             </div>
           </article>
         </div>
     
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/linux-note">
+              <h3 class="post-title">
+                Linux基本命令荟萃
+              </h3>
+            </a>
+          </div>  
         
 
         
