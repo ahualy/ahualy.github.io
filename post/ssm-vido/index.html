@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SSM上传，下载，在线播放视频 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1558838650977">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1558839150961">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1558838650977" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1558839150961" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -106,6 +106,25 @@
 &lt;/form&gt;
 </code></pre>
 <ul>
+<li>下载Jsp代码</li>
+</ul>
+<pre><code>&lt;td align=&quot;center&quot;  width=&quot;40px;&quot;&gt;&lt;a href=&quot;#&quot; id=&quot;down_${dept.id }&quot;&gt;
+		&lt;img width=&quot;20&quot; height=&quot;20&quot; title=&quot;下载&quot; src=&quot;${ctx }/public/images/downLoad.png&quot;/&gt;&lt;/a&gt;
+ &lt;/td&gt;
+ 
+&lt;script type=&quot;text/javascript&quot;&gt;
+    $(function(){
+    	/** 下载文档功能 */
+    	$(&quot;a[id^='down_']&quot;).click(function(){
+    		/** 得到需要下载的文档的id */
+    		var id = this.id.replace(&quot;down_&quot;,&quot;&quot;);
+    		/** 下载该文档 */
+    		window.location = &quot;${ctx}/traindata/downLoad?id=&quot;+id;
+    	})
+    })
+    &lt;/script&gt;
+</code></pre>
+<ul>
 <li>播放Jsp代码</li>
 </ul>
 <pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
@@ -143,6 +162,31 @@
 		}
 </code></pre>
 <ul>
+<li>下载Controller代码展示</li>
+</ul>
+<pre><code>@RequestMapping(value=&quot;/traindata/downLoad&quot;)
+		 public ResponseEntity&lt;byte[]&gt;  downLoad(Integer id,HttpSession session) throws Exception{
+			// 根据id查询视频
+			TrainData target = ahualyservice.get_TrainDataInfo(id);
+			String fileName = target.getFilename();
+		
+			String path = session.getServletContext().getRealPath(  &quot;/WEB-INF/upload&quot;);
+			
+			// 获得要下载文件的File对象
+			File file = new File(path+&quot;/&quot;+ fileName);
+			// 创建springframework的HttpHeaders对象
+			HttpHeaders headers = new HttpHeaders();  
+	        // 下载显示的文件名，解决中文名称乱码问题  
+	        String downloadFielName = new String(fileName.getBytes(&quot;UTF-8&quot;),&quot;iso-8859-1&quot;);
+	        // 通知浏览器以attachment（下载方式）打开图片
+	        headers.setContentDispositionFormData(&quot;attachment&quot;, downloadFielName); 
+	        // application/octet-stream ： 二进制流数据（最常见的文件下载）。
+	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	        // 201 HttpStatus.CREATED
+	        return new ResponseEntity&lt;byte[]&gt;(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED); 
+		}
+</code></pre>
+<ul>
 <li>播放Controller代码</li>
 </ul>
 <pre><code>		@RequestMapping(value=&quot;/traindata/play&quot;,method=RequestMethod.GET)
@@ -155,6 +199,8 @@
 </code></pre>
 <p><strong>效果展示</strong></p>
 <ul>
+<li>上传效果
+<img src="https://ahualy.github.io//post-images/1558839146397.png" alt=""></li>
 <li>播放效果
 <img src="https://ahualy.github.io//post-images/1558838465571.png" alt="">	
 如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx获取源码
