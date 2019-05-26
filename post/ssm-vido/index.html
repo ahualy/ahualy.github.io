@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SSM上传，下载，在线播放视频 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1558835133319">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1558838650977">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1558835133319" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1558838650977" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -87,6 +87,79 @@
             
             <div class="post-content">
               <h3 id="核心代码">核心代码</h3>
+<ul>
+<li>上传Jsp代码</li>
+</ul>
+<pre><code>&lt;form  method=&quot;POST&quot;  enctype=&quot;multipart/form-data&quot; action=&quot;${ctx}/traindata/add&quot;&gt;
+  &lt;div &gt;
+      &lt;label for=&quot;username&quot;&gt;
+           &lt;span class=&quot;x-red&quot;&gt;*&lt;/span&gt;上传视频
+      &lt;/label&gt;
+      &lt;div&gt;
+           &lt;input type=&quot;file&quot; id=&quot;file&quot; name=&quot;file&quot;  &gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+   &lt;div &gt;
+      &lt;label for=&quot;L_repass&quot; &gt;&lt;/label&gt;
+          &lt;input type=&quot;submit&quot; value=&quot; 提交&quot;  lay-filter=&quot;add&quot; lay-submit=&quot;&quot;/&gt;
+    &lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+<ul>
+<li>播放Jsp代码</li>
+</ul>
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+	var flashvars={
+		p:0,
+		e:1,
+		i:'${ctx }/upload/suoluetu.png'
+		};
+	var video=['${ctx }/upload/${requestScope.filename}-&gt;video/mp4'];
+	//Personal/WebContent/WEB-INF/upload/01mybatis.mp4
+	var support=['all'];
+	CKobject.embedHTML5('a1','ckplayer_a1',600,400,video,flashvars,support);
+&lt;/script&gt;
+</code></pre>
+<ul>
+<li>上传 Controller代码展示</li>
+</ul>
+<pre><code>@RequestMapping(value=&quot;/traindata/add&quot;,method=RequestMethod.POST)
+		 public ModelAndView add(ModelAndView mv,@ModelAttribute TrainData trainData ,Integer id,HttpSession session
+				,HttpServletRequest request)
+				 throws Exception{
+				 
+				String path = session.getServletContext().getRealPath(&quot;/WEB-INF/upload&quot;);
+				String filename = trainData.getFile().getOriginalFilename();
+				
+				 File tempFile = new File(path+&quot;/&quot;+filename);
+				 tempFile.createNewFile();  
+				 trainData.getFile().transferTo(tempFile); 
+				 
+				 trainData.setFilename(filename);
+				 this.genericAssociation(user_id,trainData);
+				 ahualyservice.insert_TrainDataInfo(trainData);
+			   mv.setViewName(&quot;redirect:/traindata/list&quot;);
+			return mv;
+		}
+</code></pre>
+<ul>
+<li>播放Controller代码</li>
+</ul>
+<pre><code>		@RequestMapping(value=&quot;/traindata/play&quot;,method=RequestMethod.GET)
+		 public String play(String filename,Model model){
+       //根据自己的需求写，我这里是通过获取视频名称，所以做了字符串的处理
+			filename=filename.substring(0,filename.length()-4);
+			model.addAttribute(&quot;filename&quot;, filename);
+			return &quot;traindata/play&quot;;
+		}
+</code></pre>
+<p><strong>效果展示</strong></p>
+<ul>
+<li>播放效果
+<img src="https://ahualy.github.io//post-images/1558838465571.png" alt="">	
+如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx获取源码
+<img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></li>
+</ul>
 
             </div>
           </article>
