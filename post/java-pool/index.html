@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Java 线程池 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1558857425586">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559126626823">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1558857425586" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559126626823" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -87,6 +87,50 @@
             
             <div class="post-content">
               <h3 id="什么是线程池">什么是线程池</h3>
+<p><strong>前言</strong></p>
+<p>大家可能都听说过<strong>线程池、连接池、内存池、对象池</strong>等。那究竟这些池到底是什么呢？</p>
+<p>其实就是一种<strong>池化技术</strong>，就是提前保存大量的资源，以备不时之需。在机器资源有限的情况下，使用池化技术可以大大的提高资源的利用率，提升性能等。</p>
+<p>所谓的线程池也是池化技术的一种具体实现。下面将以线程池为例做总结。</p>
+<h4 id="创建一个线程">创建一个线程</h4>
+<p>Java创建一个线程通常有两种方法，一种是实现Runnable接口，另一种是继承Thread类。还有两种是衍生的方法，一种是通过Callable和FutureTask创建线程，另外一种是通过线程池创建线程。</p>
+<p>下面以实现Runnable接口为例，做说明。</p>
+<pre><code>public class App {
+    public static void main(String[] args) throws Exception {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(&quot;线程运行中&quot;);
+            }
+        }).start();
+    }
+}
+</code></pre>
+<p>新线程被创建了之后就可以利用多核CPU，处理更多线程了。当一个任务结束后，当前线程就回收。</p>
+<p>但很多时候，我们不止会执行一个任务。如果每次都是如此的<strong>创建线程-&gt;执行任务-&gt;销毁线程</strong>，会造成很大的性能开销。</p>
+<p>那能否一个线程创建后，执行完一个任务后，又去执行另一个任务，而不是销毁。这就是线程池。</p>
+<p>这也就是池化技术的思想，通过预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。</p>
+<h4 id="线程池的简单使用">线程池的简单使用</h4>
+<p>Java创建线程池</p>
+<pre><code>import java.util.concurrent.*;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executorService = new ThreadPoolExecutor(1, 1,
+                60L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue&lt;&gt;(10));
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(&quot;线程池&quot;);
+            }
+        });
+
+        executorService.shutdown();
+    }
+}
+</code></pre>
+<p>通过上面代码不难理解，Java创建线程池很简单，直接通过JDK提供的ThreadPoolExecutor构造就可以。也可以通过Executors静态工厂构建，但一般不建议。</p>
 
             </div>
           </article>
