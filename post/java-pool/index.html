@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Java 线程池 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559126626823">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559128588501">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559126626823" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559128588501" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -131,6 +131,215 @@ public class App {
 }
 </code></pre>
 <p>通过上面代码不难理解，Java创建线程池很简单，直接通过JDK提供的ThreadPoolExecutor构造就可以。也可以通过Executors静态工厂构建，但一般不建议。</p>
+<h4 id="线程池构造函数">线程池构造函数</h4>
+<p>ThreadPoolExecutor部分源码展示</p>
+<pre><code>  public ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue&lt;Runnable&gt; workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler) {
+        if (corePoolSize &lt; 0 ||
+            maximumPoolSize &lt;= 0 ||
+            maximumPoolSize &lt; corePoolSize ||
+            keepAliveTime &lt; 0)
+            throw new IllegalArgumentException();
+        if (workQueue == null || threadFactory == null || handler == null)
+            throw new NullPointerException();
+        this.corePoolSize = corePoolSize;
+        this.maximumPoolSize = maximumPoolSize;
+        this.workQueue = workQueue;
+        this.keepAliveTime = unit.toNanos(keepAliveTime);
+        this.threadFactory = threadFactory;
+        this.handler = handler;
+    }
+</code></pre>
+<p>如果把线程池比作一个公司。公司会有正式员工处理正常业务，如果工作量大的话，会雇佣外包人员来工作。</p>
+<p>闲时就可以释放外包人员以减少公司管理开销。一个公司因为成本关系，雇佣的人员始终是有最大数。</p>
+<p>如果这时候还有任务处理不过来，就走需求池排任务。</p>
+<ul>
+<li>
+<p>acc : 获取调用上下文</p>
+</li>
+<li>
+<p>corePoolSize: 核心线程数量，可以类比正式员工数量，常驻线程数量。</p>
+</li>
+<li>
+<p>maximumPoolSize: 最大的线程数量，公司最多雇佣员工数量。常驻+临时线程数量。</p>
+</li>
+<li>
+<p>workQueue：多余任务等待队列，再多的人都处理不过来了，需要等着，在这个地方等。</p>
+</li>
+<li>
+<p>keepAliveTime：非核心线程空闲时间，就是外包人员等了多久，如果还没有活干，解雇了。</p>
+</li>
+<li>
+<p>threadFactory: 创建线程的工厂，在这个地方可以统一处理创建的线程的属性。每个公司对员工的要求不一样，恩，在这里设置员工的属性。</p>
+</li>
+<li>
+<p>handler：线程池拒绝策略，什么意思呢？就是当任务实在是太多，人也不够，需求池也排满了，还有任务咋办？默认是不处理，抛出异常告诉任务提交者，我这忙不过来了。</p>
+</li>
+</ul>
+<h4 id="添加一个任务">添加一个任务</h4>
+<p>接着，我们看一下线程池中比较重要的execute方法，该方法用于向线程池中添加一个任务。</p>
+<pre><code> public void execute(Runnable command) {
+        if (command == null)
+            throw new NullPointerException();
+        
+        int c = ctl.get();
+        if (workerCountOf(c) &lt; corePoolSize) {  // 第一个
+            if (addWorker(command, true))
+                return;
+            c = ctl.get();
+        }
+        if (isRunning(c) &amp;&amp; workQueue.offer(command)) { // 第二个
+            int recheck = ctl.get();
+            if (! isRunning(recheck) &amp;&amp; remove(command))
+                reject(command);
+            else if (workerCountOf(recheck) == 0)
+                addWorker(null, false);
+        }
+        else if (!addWorker(command, false))   //  第三个
+            reject(command);
+    }
+</code></pre>
+<p>第一个判断：workerCountOf方法根据ctl的低29位，得到线程池的当前线程数，如果线程数小于corePoolSize，则执行addWorker方法创建新的线程执行任务；</p>
+<p>第二个判断：判断线程池是否在运行，如果在，任务队列是否允许插入，插入成功再次验证线程池是否运行，如果不在运行，移除插入的任务，然后抛出拒绝策略。如果在运行，没有线程了，就启用一个线程。</p>
+<p>第三个判断：如果添加非核心线程失败，就直接拒绝了。</p>
+<h4 id="添加worker线程">添加worker线程</h4>
+<p>从方法execute的实现可以看出：addWorker主要负责创建新的线程并执行任务，代码如下（这里代码有点长，没关系，也是分块的，总共有5个关键的代码块）：</p>
+<pre><code> // Check if queue empty only if necessary.
+            if (rs &gt;= SHUTDOWN &amp;&amp;
+                ! (rs == SHUTDOWN &amp;&amp;
+                   firstTask == null &amp;&amp;
+                   ! workQueue.isEmpty()))
+                return false;
+</code></pre>
+<p>这段代码是做是否能够添加工作线程条件过滤：
+判断线程池的状态，如果线程池的状态值大于或等SHUTDOWN，则不处理提交的任务，直接返回；</p>
+<pre><code>for (;;) {
+                int wc = workerCountOf(c);
+                if (wc &gt;= CAPACITY ||
+                    wc &gt;= (core ? corePoolSize : maximumPoolSize))
+                    return false;
+                if (compareAndIncrementWorkerCount(c))
+                    break retry;
+                c = ctl.get();  // Re-read ctl
+                if (runStateOf(c) != rs)
+                    continue retry;
+                // else CAS failed due to workerCount change; retry inner loop
+            }
+</code></pre>
+<p>这段代码是做做自旋，更新创建线程数量：
+通过参数core判断当前需要创建的线程是否为核心线程，如果core为true，且当前线程数小于corePoolSize，则跳出循环，开始创建新的线程</p>
+<p>有人或许会疑问 retry 是什么？这个是java中的goto语法。只能运用在break和continue后面。</p>
+<pre><code>w = new Worker(firstTask);
+            final Thread t = w.thread;
+            if (t != null) {
+                final ReentrantLock mainLock = this.mainLock;
+                mainLock.lock();
+</code></pre>
+<p>上面代码获取线程池主锁。
+线程池的工作线程通过Woker类实现，通过ReentrantLock锁保证线程安全。</p>
+<pre><code> if (rs &lt; SHUTDOWN ||
+                        (rs == SHUTDOWN &amp;&amp; firstTask == null)) {
+                        if (t.isAlive()) // precheck that t is startable
+                            throw new IllegalThreadStateException();
+                        workers.add(w);
+                        int s = workers.size();
+                        if (s &gt; largestPoolSize)
+                            largestPoolSize = s;
+                        workerAdded = true;
+</code></pre>
+<p>上面代码添加线程到workers中（线程池中）。</p>
+<pre><code>if (workerAdded) {
+                    t.start();
+                    workerStarted = true;
+                }
+</code></pre>
+<p>上面代码启动新建的线程。</p>
+<p>看完了上面的代码，估计大家还有一个疑问，workers是什么？
+看看源码就知道其实是一个hashSet。所以，线程池底层的存储结构其实就是一个HashSet。</p>
+<pre><code> private final HashSet&lt;Worker&gt; workers = new HashSet&lt;Worker&gt;();
+</code></pre>
+<h4 id="worker线程处理队列任务">worker线程处理队列任务</h4>
+<pre><code>final void runWorker(Worker w) {
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); 
+        boolean completedAbruptly = true;
+        try {
+            while (task != null || (task = getTask()) != null) {  //  第一处
+                w.lock();
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &amp;&amp;
+                      runStateAtLeast(ctl.get(), STOP))) &amp;&amp;
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try {
+                    beforeExecute(wt, task);  //  第二处
+                    Throwable thrown = null;
+                    try {
+                        task.run();     //   第三处
+                    } catch (RuntimeException x) {
+                        thrown = x; throw x;
+                    } catch (Error x) {
+                        thrown = x; throw x;
+                    } catch (Throwable x) {
+                        thrown = x; throw new Error(x);
+                    } finally {
+                        afterExecute(task, thrown);    //  第四处
+                    }
+                } finally {
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                }
+            }
+            completedAbruptly = false;
+        } finally {
+            processWorkerExit(w, completedAbruptly);
+        }
+    }
+</code></pre>
+<ul>
+<li>
+<p>第一处：是否是第一次执行任务，或者从队列中可以获取到任务。</p>
+</li>
+<li>
+<p>第二处：获取到任务后，执行任务开始前操作钩子。</p>
+</li>
+<li>
+<p>第三处：执行任务。</p>
+</li>
+<li>
+<p>第四处：执行任务后钩子。</p>
+</li>
+</ul>
+<p>这两个钩子（beforeExecute，afterExecute）允许我们自己继承线程池，做任务执行前后处理。</p>
+<p>到这里，源代码分析到此为止。</p>
+<h4 id="总结">总结</h4>
+<ul>
+<li>
+<p>所谓线程池本质是一个hashSet。多余的任务会放在阻塞队列中。</p>
+</li>
+<li>
+<p>只有当阻塞队列满了后，才会触发非核心线程的创建。所以非核心线程只是临时过来打杂的。直到空闲了，然后自己关闭了。</p>
+</li>
+<li>
+<p>线程池提供了两个钩子（beforeExecute，afterExecute）给我们，我们继承线程池，在执行任务前后做一些事情。</p>
+</li>
+<li>
+<p>线程池原理关键技术：锁（lock,cas）、阻塞队列、hashSet（资源池）</p>
+</li>
+</ul>
+<p><img src="https://ahualy.github.io//post-images/1559128418867.webp" alt="">
+<strong>声明</strong>
+转载自 https://mp.weixin.qq.com/s/-89-CcDnSLBYy3THmcLEdQ
+如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx
+<img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></p>
 
             </div>
           </article>
