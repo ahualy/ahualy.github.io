@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Java 线程池 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559128588501">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559128721069">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559128588501" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559128721069" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -218,7 +218,7 @@ public class App {
 </code></pre>
 <p>这段代码是做是否能够添加工作线程条件过滤：
 判断线程池的状态，如果线程池的状态值大于或等SHUTDOWN，则不处理提交的任务，直接返回；</p>
-<pre><code>for (;;) {
+<pre><code>						for (;;) {
                 int wc = workerCountOf(c);
                 if (wc &gt;= CAPACITY ||
                     wc &gt;= (core ? corePoolSize : maximumPoolSize))
@@ -234,7 +234,7 @@ public class App {
 <p>这段代码是做做自旋，更新创建线程数量：
 通过参数core判断当前需要创建的线程是否为核心线程，如果core为true，且当前线程数小于corePoolSize，则跳出循环，开始创建新的线程</p>
 <p>有人或许会疑问 retry 是什么？这个是java中的goto语法。只能运用在break和continue后面。</p>
-<pre><code>w = new Worker(firstTask);
+<pre><code>						w = new Worker(firstTask);
             final Thread t = w.thread;
             if (t != null) {
                 final ReentrantLock mainLock = this.mainLock;
@@ -242,7 +242,7 @@ public class App {
 </code></pre>
 <p>上面代码获取线程池主锁。
 线程池的工作线程通过Woker类实现，通过ReentrantLock锁保证线程安全。</p>
-<pre><code> if (rs &lt; SHUTDOWN ||
+<pre><code>					 if (rs &lt; SHUTDOWN ||
                         (rs == SHUTDOWN &amp;&amp; firstTask == null)) {
                         if (t.isAlive()) // precheck that t is startable
                             throw new IllegalThreadStateException();
@@ -254,9 +254,9 @@ public class App {
 </code></pre>
 <p>上面代码添加线程到workers中（线程池中）。</p>
 <pre><code>if (workerAdded) {
-                    t.start();
-                    workerStarted = true;
-                }
+        t.start();
+        workerStarted = true;
+   }
 </code></pre>
 <p>上面代码启动新建的线程。</p>
 <p>看完了上面的代码，估计大家还有一个疑问，workers是什么？
@@ -337,7 +337,7 @@ public class App {
 </ul>
 <p><img src="https://ahualy.github.io//post-images/1559128418867.webp" alt="">
 <strong>声明</strong>
-转载自 https://mp.weixin.qq.com/s/-89-CcDnSLBYy3THmcLEdQ
+转载自 https://mp.weixin.qq.com/s/-89-CcDnSLBYy3THmcLEdQ<br>
 如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx
 <img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></p>
 
