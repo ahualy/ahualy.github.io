@@ -1,0 +1,224 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>手机号码实现注册业务逻辑代码实现 | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1559394251096">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1559394251096" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href=" https://ahualy.github.io//post/hadoop-first/" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              手机号码实现注册业务逻辑代码实现
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-06-01 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <h3 id="具体需求在代码中有体现">具体需求在代码中有体现</h3>
+<p><strong>业务代码如下：</strong></p>
+<pre><code>import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * 用户手机号注册校验
+ * 
+ * @author Ahualy
+ * 
+ * 改代码逻辑独立完成
+ *
+ */
+public class PhoneNum {
+	private static  List&lt;String&gt; effectivemobilenumber = new ArrayList&lt;&gt;();    //首先创建一个列表，将有效的手机号码进行存储
+	public static void main(String[] args) {
+		// TODO 通过此手机号注册成功
+		String phoneNum1 = &quot;138 1234 1234&quot;;
+
+		// TODO 通过本手机号无法注册，提示为非法手机号
+		String phoneNum2 = &quot;13812345abc&quot;;
+
+		// TODO 通过此手机号注册成功
+		String phoneNum3 = &quot;13812345678&quot;;
+
+		// TODO 提示此手机号已经被其他用户注册
+		String phoneNum4 = &quot;138 1234 5678&quot;;
+
+		// TODO 此手机号码为中国大陆非法手机号码
+		String phoneNum5 = &quot;98765432101&quot;;
+		
+		int i = 10;  // 测试次数
+		Scanner scanner = new Scanner(System.in);
+		
+		while(i&gt;0) {
+			
+			String phoneNum = scanner.nextLine();
+			
+			System.out.println(isMobileNO(phoneNum));
+			
+			i--;
+		}
+			scanner.close();
+	}
+	//业务代码方法编写    
+	public static String isMobileNO(String mobiles) {
+		
+	    //1.对字符串进行处理，去掉字符串中的所有空格
+	    mobiles = mobiles.replaceAll(&quot; &quot;,&quot;&quot;);
+	    
+	    for (int i = mobiles.length(); --i &gt;=0;) {
+	          if (!Character.isDigit(mobiles.charAt(i))) {  //  2.判断输入的手机号是否含有出数字以外的字符
+	                return &quot;通过本手机号无法注册，此手机号为非法手机号&quot;;
+	          } else {                                      //  3.判断该手机号码是否是大陆手机号码
+	        	Pattern p = Pattern.compile(&quot;^((13[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$&quot;);
+	      		Matcher m = p.matcher(mobiles);
+	      		if (m.matches()) {  //4.程序执行到这里说明手机号码有效
+	      			
+	      			if (effectivemobilenumber.contains(mobiles)) {  // 5.判断手机号码是否已经被注册
+	      				return &quot;此手机号已经被其他用户注册&quot;;
+	      			} else {
+	      				effectivemobilenumber.add(mobiles);     // 6.没有注册就将手机号码存入List集合
+	      				for (String string : effectivemobilenumber) {
+							System.out.println(string);
+						}
+	      				return mobiles+&quot;手机号码注册成功&quot;;
+	      			}
+	      		}else {
+	      			return &quot;此手机号码为中国大陆非法手机号码&quot;;
+	      		}
+	         }
+	    }
+		return &quot;&quot;;
+	}
+}
+
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/Microservice">
+              <h3 class="post-title">
+                什么是微服务架构？
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
