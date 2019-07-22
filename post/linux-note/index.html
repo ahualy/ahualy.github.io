@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux基本命令荟萃 | Ahualy</title>
-<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1563507176765">
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1563760792747">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href=" https://ahualy.github.io/">
-  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1563507176765" alt="">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1563760792747" alt="">
   </a>
   <h1 class="site-title">
     Ahualy
@@ -346,14 +346,20 @@ tail -n  指定用户要输出的行数</p>
 ​      10.修改文件ACL：setfacl 命令<br>
 ​         setfacl [option] file...<br>
 ​      11.查询文件ACL：getfacl 命令</p>
-<h5 id="25ps命令">25.ps命令</h5>
+<h5 id="26ps命令">26.ps命令</h5>
 <p>ps命令是最基本的进程查看命令，使用该命令可以确定有哪些进程正在运行和运行的状态、进程是否结束、进程有没有僵尸、哪些进程占用了过多的资源等等。
 ps命令显示瞬间进程的状态，并不动态连续，如果想对进程实时监控应该用top命令。
 常用的命令   ps -ef    用标准格式显示进程  或可结合管道  grep使用</p>
-<h5 id="25top命令">25.top命令</h5>
+<h5 id="27top命令">27.top命令</h5>
 <p>top命令经常用来监控linux的系统状况，比如cpu，内存的使用。</p>
-<h5 id="25scp命令">25.scp命令</h5>
+<h5 id="28scp命令">28.scp命令</h5>
 <p>scp是secure copy的简写，用于Linux下进程远程拷贝文件的命令，scp传输是加密的，可能会稍微影响一下速度，另外，scp还非常不占资源，不会提高多少系统负荷，在这一点上，rsync就远远不及它了，但当小文件众多的情况下你，rsync会倒是硬盘I/O非常高，二scp基本不会影响系统正常使用。</p>
+<h5 id="29cd命令">29.cd命令</h5>
+<p>cd ~  该用户的家目录
+cd  /  Linux根目录
+cd ..  返回上级目录
+pwd -LP(P)  查看当前目录
+cd - (返回上一次，也就是1/2这样来回交替)</p>
 <p>如果觉得对你有帮助，我就没白写，如果需要交流，可以留言，或者加我wx
 <img src="https://ahualy.github.io//post-images/1556874933556.png" alt=""></p>
 
