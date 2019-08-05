@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>HashMap和TreeMap | Ahualy</title>
+<title>横向扩展过程，如何超出扩容极限，以及如何提升容错性 | Ahualy</title>
 <link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1565016878326">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
@@ -76,17 +76,26 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              HashMap和TreeMap
+              横向扩展过程，如何超出扩容极限，以及如何提升容错性
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-16 ·
+                · 2019-08-04 ·
               </time>
               
             </div>
             
             <div class="post-content">
-              <h3 id="我是这样立即map集合">我是这样立即Map集合</h3>
+              <p>1，primary&amp;replica自动负载均衡
+2，每个node有更少的shard，IO/CPU/Memory资源给每个shard分配更多，每个shard性能更好
+3，扩容的极限，6 个shard（3 primary，3 replica），最多扩容到6台机器，每个shard可以占用单台服务器的所有资源，性能最好
+4，超出扩容极限，动态修改replica数量，9个shard（3 primary，6个replica），扩容到9台机器，比3台机器时，拥有3倍的吞吐量
+5，3台机器下，9个shard（3 primary，6个replica），资源更少，但是容错性更好，最多容纳2台机器宕机，6的shard只能容纳1台机器宕机</p>
+<p>master选举，replica容错，数据恢复
+1.9shard，3node
+2.master node宕机，自动master选举，red
+3.replica容错：新master将replica提升为primary shard，yellow
+4.重启宕机node，master node replica到该node，使用原有的shard并同步宕机后的修改，green</p>
 
             </div>
           </article>
@@ -95,9 +104,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href=" https://ahualy.github.io//post/phone-num">
+            <a href=" https://ahualy.github.io//post/shardandreplica-ji-zhi-zai-ci-shu-li-yi-ji-dan-duo-node-huan-jing-zhong-chuang-jian-index">
               <h3 class="post-title">
-                手机号码实现注册的业务逻辑代码
+                shard&amp;replica机制再次梳理以及单/多node环境中创建index
               </h3>
             </a>
           </div>  

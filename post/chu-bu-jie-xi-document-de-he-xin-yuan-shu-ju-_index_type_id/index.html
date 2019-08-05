@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>初步解析document的核心元数据：_index,_type,_id | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1565016878326">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1565016878326" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href=" https://ahualy.github.io//post/hadoop-first/" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              初步解析document的核心元数据：_index,_type,_id
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-08-04 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>1._index元数据
+（1）代表一个document存放在哪个index中
+（2）类似的数据放在一个索引，非类似的数据放在不同的索引
+（3）index中包含了很多类似的document：就是说document的fields很大一部分是相同的
+（4）索引名称必须是小写的，不能用下划线开头，不能包含逗号
+2._type元数据
+（1）代表document属于index中的那个类别（type）
+（2）一个索引通常会划分为多个type，逻辑上对index中有些不同的几类数据进行分类
+（3）type名称可以是大写或者是小写，但是同时不能用下划线开头，不能包含逗号
+3._id元数据
+（1）代表document的唯一标识，与index和type一起，可以唯一标识和定位一个document
+（2）我们可以手动指定document的id，也可以不指定，由ES自动为我们创建一个id</p>
+<p>手动指定document id
+（1）根据应用情况来说，是否满足手动指定document id前提：一般来说，是从某些其他系统中，倒入一些ES时，会采取这种方式，就是使用系统中已有数据的唯一标识，作为document的id
+（2）put /index/type/id
+自动生成document id
+（1）post  /index/type
+（2）自动生成id，长度为20字符，URL安全，base64编码，GUID，分布式系统并行生成时不可能会发生冲突
+4._source元数据
+我们在创建一个document的时候，使用的那个放在request body中的json串，默认情况下，在get的时候，会原封不动的给我们返回回来
+定制返回的结果：指定_source中返回哪些field
+GET  /test_index/test_type/1?_source=test_field1    多个字段的话就用逗号隔开</p>
+<p>5._document的全量替换、强制创建以及文档删除等操作的分析
+（1）全量替换
+a.语法和创建文档是一样的，如果document id不存在，就创建，如果document id存在就是全量替换
+b.document是不可变的，如果要修改document的内容，第一种方式就是全量替换，直接对document重新建立索引，替换里面的所有内容
+c.ES会将老的document标记为deleted，然后新增我们给定的一个document，当我们创建越来越多的document的时候，ES会在适当的时机在后台删除标记为deleted的document
+（2）强制创建
+a.创建文档与全量替换的语法是一样的，有时我们只是想新建文档，不想替换文档，如果强制进行创建呢？
+b.PUT  /index/tyoe/id?op_type=create,   PUT  /index/type/id/_create
+（3）删除
+a.DELETE  /index/type/id
+b.不会理解wuli删除，只会将其标记为deleted，当数据越来越多的时候，在后台自动删除</p>
+<p>悲观锁与乐观锁两种并发控制方案</p>
+<p>悲观锁的优点：方便，直接加锁，对应用程序来说，不需要做额外的操作，缺点，并发能力很低，同一时间 只能有一条线程操作数据
+乐观锁的优点：并发能力很高，不给数据加锁，大量线程并发操作， 缺点：麻烦，每次更新的时候，都要先比对版本号，然后可能需要重新加载数据，再次修改，再写，这个过程可能要重复好几次。</p>
+<p>Elasticsearch内部如何基于_version进行乐观锁并发控制</p>
+<p>ES的后台，很多的这种类似于replica同步请求，都是多线程异步的，也就是说，多个修改请求之间，是乱序的，没有顺序的，可能后修改的先到，先修改的后到。
+ES内部的多线程异步并发修改时，是基于自己的_version版本号进行乐观锁并发控制的，在后修改先到时，那么field=test3,version=2
+先修改后到时field=test2,version=1,此时会比较一下version号，是否相等，如果不相等时，那么就直接将field=test2这条数据给扔掉，就不需要了，这样的话，结果就会保持一个正确的状态，field=test3.</p>
+<p>（1）_version元数据
+第一次创建document的时候，它的_version内部版本号就是1，以后，每次对这个document执行修改或者删除的操作，都会对这个_version版本号加1，哪怕是删除，也会对这条数据的版本号加1
+我们会发现，在删除一个document之后，可以从一个 侧面证明，他不是立即物理删除掉的，因为它的一些版本号等信息 还是保留的。先删除一条document，再重新创建这条document，其实会在delete version基础之上，再把version号加1</p>
+<p>（2）external  version
+ES提供了一个feature，就是说，你可以不用它提供的的内部_version版本号来进行并发控制，也可以基于你自己维护的一个版本号来进行并发控制。举个栗子，假如你的数据在mysql里也有 一份，然后你的应用系统本身就维护了一个版本号，无论是自己生成的，还是程序控制的，这个时候，你进行乐观锁并发控制的时候，可能并不是想用ES内部的_version来进行控制，而是用你自己维护的那个version来进行控制。
+?version=1
+?version=1&amp;version_type=external
+version_type=external,唯一的区别在于，_version,只有当你提供的version与ES中的_version一模一样的时候，才可以进行修改 只要不一样就报错。当version_type=external的时候，只有当你提供的version比ES中_version大的时候，才能 完成修改</p>
+<p>1.什么是partial update?
+PUT  /index/type/id,创建文档&amp;替换文档，就是一样的语法
+一般对应到应用程序中，每次的执行流程基本上这样的：
+（1）应用程序发起一个get请求，获取到document，展示到前台界面，供用户查看和修改
+（2）用户在前台，界面修改数据发送到后台
+（3）后台代码会将用户修改的数据在内存中执行 ，然后封装好修改后的全量数据
+（4）延后发送PUT请求，到ES中，进行全量替换，
+（5）ES将老的document标记为deleted，然后重新创建一个新的document</p>
+<p>partial update</p>
+<p>POST  /index/type/id/_update
+{
+&quot;doc&quot;:{
+&quot;要修改的少数field即可，不需要全量数据&quot;
+}
+}
+看起来好像方便了，每次就床底少数几个发生修改的数据，不需要将全量的document数据 发送过去</p>
+<p>partial update相较于全量替换的优点：
+1.所有的查询，修改和写会操作，都发生在ES的一个shard内部，避免了所有的网络数据传输的开销（减少了两次网络请求），大大提升了性能。
+2.减少了查询和修改中的时间间隔，可以有效减少并发冲突的情况。</p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/heng-xiang-kuo-zhan-guo-cheng-ru-he-chao-chu-kuo-rong-ji-xian-yi-ji-ru-he-ti-sheng-rong-cuo-xing">
+              <h3 class="post-title">
+                横向扩展过程，如何超出扩容极限，以及如何提升容错性
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

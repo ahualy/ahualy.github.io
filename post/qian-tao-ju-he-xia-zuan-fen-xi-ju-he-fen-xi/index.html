@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>HashMap和TreeMap | Ahualy</title>
+<title>嵌套聚合，下钻分析，聚合分析 | Ahualy</title>
 <link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1565016878326">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
@@ -76,17 +76,95 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              HashMap和TreeMap
+              嵌套聚合，下钻分析，聚合分析
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-16 ·
+                · 2019-08-04 ·
               </time>
               
             </div>
             
             <div class="post-content">
-              <h3 id="我是这样立即map集合">我是这样立即Map集合</h3>
+              <p>第一个分析需求，计算每个tags下面的商品数量
+分组，按照tags字段进行分析统计
+GET /ecommerce/product/_search
+{
+&quot;size&quot;:0,
+&quot;aggs&quot;:{
+&quot;group_by_tags&quot;:{
+&quot;terms&quot;:{&quot;field&quot;:&quot;tags&quot;}
+}
+}
+}</p>
+<p>执行以上操作会报错，将文本filed的fileddata属性设置为true
+PUT  ecommerce/_mapping/product
+{
+&quot;properties&quot;: {
+&quot;tags&quot;:{
+&quot;type&quot;: &quot;text&quot;,
+&quot;fielddata&quot;: true
+}
+}
+}
+然后再进行以上操作</p>
+<p>第二个聚合分析需求，对名称中包含yagao的商品，计算每个tag下的商品数量
+GET /ecommerce/product/_search
+{
+&quot;size&quot;:0,
+&quot;query&quot;: {
+&quot;match&quot;: {
+&quot;name&quot;: &quot;yagao&quot;
+}
+},
+&quot;aggs&quot;:{
+&quot;group_by_tags&quot;:{
+&quot;terms&quot;:{&quot;field&quot;:&quot;tags&quot;}
+}
+}
+}</p>
+<p>第三个聚合分析的需求，先分组，在算每组的平均值，计算每个tag下的商品的平均价格
+GET ecommerce/product/_search
+{
+&quot;size&quot;: 0,
+&quot;aggs&quot;: {
+&quot;group_by_tags&quot;: {
+&quot;terms&quot;: {
+&quot;field&quot;: &quot;tags&quot;
+},
+&quot;aggs&quot;: {
+&quot;avg_price&quot;: {
+&quot;avg&quot;: {
+&quot;field&quot;: &quot;price&quot;
+}
+}
+}
+}
+}
+}
+第四个数据分析需求，计算每个tag下的商品的平均价格，并且按照评价价格降序排序
+GET ecommerce/product/_search
+{
+&quot;size&quot;: 0,
+&quot;aggs&quot;: {
+&quot;all_tags&quot;: {
+&quot;terms&quot;: {
+&quot;field&quot;: &quot;tags&quot;,
+&quot;order&quot;: {
+&quot;avg_price&quot;: &quot;desc&quot;
+}
+},
+&quot;aggs&quot;: {
+&quot;avg_price&quot;: {
+&quot;avg&quot;: {
+&quot;field&quot;: &quot;price&quot;
+}
+}
+}
+}
+}
+}</p>
+<p>第五个数据分析需求：按照指定的价格范围区间进行分组，然后在每组内再按照tag进行分组，最后再计算每组的平均价格</p>
 
             </div>
           </article>
@@ -95,9 +173,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href=" https://ahualy.github.io//post/phone-num">
+            <a href=" https://ahualy.github.io//post/duo-chong-sou-suo-fang-shi">
               <h3 class="post-title">
-                手机号码实现注册的业务逻辑代码
+                多种搜索方式
               </h3>
             </a>
           </div>  

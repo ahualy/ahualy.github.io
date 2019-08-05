@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>HashMap和TreeMap | Ahualy</title>
+<title>Elasticsearch基础分布式架构 | Ahualy</title>
 <link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1565016878326">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
@@ -76,17 +76,39 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              HashMap和TreeMap
+              Elasticsearch基础分布式架构
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-16 ·
+                · 2019-08-04 ·
               </time>
               
             </div>
             
             <div class="post-content">
-              <h3 id="我是这样立即map集合">我是这样立即Map集合</h3>
+              <p>一，Elasticsearch对复杂分布式机制的透明性隐藏特性
+Elasticsearch是一套分布式的系统，分布式是为了应对大数据量
+隐藏了复杂的分布式机制
+分片机制（我们之前随随便便就将一些document插入到ES里面去，我们有没有care过数据是怎么进行分片的，数据到哪个shard里面去）cluster discovery（集群发现机制，我么之前在做哪个集群status从yellow到green的实验里，直接启动了第二个ES进程，哪个进行作为一个node自动就发现了集群，并且加了进去，还接收了部分数据，replica shard）
+shard负载均衡（举例，假设现在有三个节点，总共有25个shard要分配到三个节点上去，ES自动记性均匀分配，以保持每个节点的均衡的读写负载请求）
+shard副本，请求路由，集群扩容，shard重分配
+二，Elasticsearch的垂直扩容与水平扩容
+6台服务器，总共可以容纳6T的数据量，假设现在数据量马上要增长到8T，有两种方案
+垂直扩容：重新购置两台服务器，每台服务器的容量是2T，替换掉老的两台服务器，那么现在6台服务器的总容量就是4<em>1T+2</em>2T= 8T
+水平扩容：重新购置两台服务器，每台服务器的容量是1T，直接加入到集群中去，那么现在服务器的总容量就是8*1T = 8T
+垂直扩容：采购更强大的服务器，成本非常高，而且会有瓶颈，假设世界上最强大的服务器是10T，当是当你的总数量增加到5000T的时候，你要采购多少台最强大的服务器
+水平扩容：业界经常采用水平扩容方案，就是采购越来越多的普通服务器，性能比较一般，但是很多服务器组织在一起，就能构成强大的计算和存储能力</p>
+<p>扩容对应用程序的透明性
+三，增加或减少节点时的数据rebalance
+总有一些服务器的负载会重一些，承载的数据量和请求量会大一些，当增加或者减少一些节点时，ES会自动分配资源情况，保持负载均衡
+四，master节点
+管理ES集群的元数据，默认情况下会自动选择出一台服务器会作为master节点，但是master节点不承载所有的请求，所以不会是一个单点瓶颈
+1，创建或删除索引
+2，增加或删除节点
+五，节点对等的分布式架构
+1， 节点对等，每个节点都能接收所有的请求
+2，自动请求路由
+3，响应收集</p>
 
             </div>
           </article>
@@ -95,9 +117,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href=" https://ahualy.github.io//post/phone-num">
+            <a href=" https://ahualy.github.io//post/qian-tao-ju-he-xia-zuan-fen-xi-ju-he-fen-xi">
               <h3 class="post-title">
-                手机号码实现注册的业务逻辑代码
+                嵌套聚合，下钻分析，聚合分析
               </h3>
             </a>
           </div>  

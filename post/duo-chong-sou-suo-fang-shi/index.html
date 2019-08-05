@@ -1,0 +1,250 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>多种搜索方式 | Ahualy</title>
+<link rel="shortcut icon" href=" https://ahualy.github.io//favicon.ico?v=1565016878326">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href=" https://ahualy.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href=" https://ahualy.github.io/">
+  <img class="avatar" src=" https://ahualy.github.io//images/avatar.png?v=1565016878326" alt="">
+  </a>
+  <h1 class="site-title">
+    Ahualy
+  </h1>
+  <p class="site-description">
+    翎幺
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href=" https://ahualy.github.io//post/hadoop-first/" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about-ahualy" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ahualy" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              多种搜索方式
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-08-02 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>一，query string search
+搜索全部商品：GET  /ecommerce/product/_search
+搜索商品名称中包含牙膏的商品，而且按售价降序排序：GET  /ecommerce/product/_search?q=name:yagao&amp;sort=price:desc
+适用于临时的在命令行使用一些工具，比如curl，快速的发出请求，来检索想要的信息，但是如果查询请求很复杂，是很难去构建的
+在生产环境中，几乎很少使用 query string search
+took：耗费了几毫秒
+time_out：是否超时
+_shards：由于把数据拆成了5个分片，所以对于搜索请求，会打到所有的primary shard（或者是它的某个replica shard也可以）
+hits.total：查询结果的数量，几个document
+hits.max_score：score就是document对于一个search的相关度的匹配分数，越相关，就越匹配，分数也高
+hits.hits：包含了匹配搜索的document的详细数据
+二，query DSL</p>
+<p>DSL（Domain Specifies Langguage）特定领域的语言
+http request body:请求体，可以用json的格式来构建查询语言，比较方便，可以构建各种复杂的语法，比query string search
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{&quot;match_all&quot;:{}}
+}
+查询名称包含yagao的商品，同时按照价格降序排序
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{
+&quot;match&quot;:{
+&quot;name&quot;:&quot;yagao&quot;
+}
+},
+&quot;sort&quot;:[
+{&quot;price&quot;:&quot;desc&quot;}
+]
+}
+分页查询商品，总共三条商品，假设每页就显示一条商品，现在显示第二页，所以就查出来 第二个商品
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{&quot;match_all&quot;:{}}，
+&quot;from&quot;:1,
+&quot;size&quot;:2
+}
+指定要查询出来商品的名称和价格就可以
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{&quot;match_all&quot;:{}}，
+&quot;_source&quot;:[&quot;name&quot;,&quot;price&quot;]
+}
+更加适合生产环境的使用，可以构建复杂的查询</p>
+<p>三，query filter
+搜索商品名称包含yagao，而且售价大于25元的商品
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{
+&quot;bool&quot;:{
+&quot;must&quot;:{
+&quot;match&quot;:{
+&quot;name&quot;:&quot;yagao&quot;
+}
+},
+&quot;filter&quot;:{
+&quot;range&quot;:{
+&quot;price&quot;:{&quot;gt&quot;:25}
+}
+}
+}
+}
+}
+四，full-text search  （全文检索）
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{
+&quot;match&quot;:{
+&quot;producer&quot;:&quot;yagao producer&quot;
+}
+}
+}
+尽量，不论是学什么技术，一定要自己手动敲，切记cv，只有自己手动敲，学习效果才最好。
+producer这个字段，会先被拆解，简历倒排索引
+special   4
+yagao   4
+producer 1 2 3 4
+gaolujie 1
+zhonghua   3
+jiajieshi 2
+当  yagao producer----&gt;yagao和producer
+五，phrase search（短语搜索）
+跟全文检索相反，全文检索会将输入的搜索穿拆解开来，去倒排索引里面去一一匹配，只要能匹配上任意一个拆解后的单词，就额可以作为结果返回
+phrase search：要求输入的搜索串，必须在指定的字段文本中，完全包含一模一样的，才可以算是匹配，才能作为结果返回。
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{
+&quot;match_phrase&quot;:{
+&quot;producer&quot;:&quot;yagao producer&quot;
+}
+}
+}
+六，highlight search （高亮搜索）
+GET /ecommerce/product/_search
+{
+&quot;query&quot;:{
+&quot;match_phrase&quot;:{
+&quot;producer&quot;:&quot;yagao producer&quot;
+}
+},
+&quot;highlight&quot;:{
+&quot;fields&quot;:{
+&quot;producer&quot;:{}
+}
+}
+}</p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href=" https://ahualy.github.io//post/kuai-su-ru-men-an-li-shi-zhan">
+              <h3 class="post-title">
+                快速入门案例实战
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '6e5bf68152a48928afe7',
+    clientSecret: '9fc75f6b2af7f297c3de1ce161b8f025ead74ae7',
+    repo: 'ahualy.github.io',
+    owner: 'ahualy',
+    admin: ['ahualy'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by 
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
